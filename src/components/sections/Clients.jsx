@@ -1,16 +1,7 @@
-import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 import Reveal from '../Reveal';
+import { gsap, ScrollTrigger } from '../../lib/gsap';
 import { clients } from '../../data/clients';
-
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.06 } },
-};
-
-const logoVariants = {
-  hidden: { opacity: 0, y: 14 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
-};
 
 function LogoCard({ client }) {
   return (
@@ -31,6 +22,32 @@ function LogoCard({ client }) {
 }
 
 export default function Clients() {
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const cards = wrapperRef.current.querySelectorAll('[data-logo-card]');
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 14 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: 'power2.out',
+          stagger: 0.06,
+          scrollTrigger: {
+            trigger: wrapperRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }, wrapperRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section className="relative border-y border-white/10 bg-ink py-24">
       <div className="mx-auto max-w-7xl px-6 text-center md:px-10">
@@ -48,26 +65,20 @@ export default function Clients() {
         </Reveal>
       </div>
 
-      <motion.div
-        className="relative mt-14 overflow-hidden"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={containerVariants}
-      >
+      <div ref={wrapperRef} className="relative mt-14 overflow-hidden">
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-ink to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-ink to-transparent" />
         <div className="flex w-max animate-marquee gap-6">
           {clients.map((client) => (
-            <motion.div key={`a-${client.name}`} variants={logoVariants}>
+            <div key={`a-${client.name}`} data-logo-card>
               <LogoCard client={client} />
-            </motion.div>
+            </div>
           ))}
           {clients.map((client) => (
             <LogoCard key={`b-${client.name}`} client={client} />
           ))}
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
