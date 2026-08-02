@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import logoFull from '../assets/logo-full.png';
-import logoFullWebp from '../assets/logo-full.webp';
 
 const SERVICE_LINKS = [
   'Social Media Management',
@@ -24,10 +23,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <div className="grid gap-12 pb-16 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
-            <picture>
-              <source srcSet={logoFullWebp} type="image/webp" />
-              <img src={logoFull} alt="Monkey Media" className="w-56" />
-            </picture>
+            <img src={logoFull} alt="Monkey Media" className="w-56" />
             <p className="mt-6 max-w-xs text-sm text-paper/60">
               A next level creative agency for brands that refuse to sit still. Built with pure
               monkey energy.
