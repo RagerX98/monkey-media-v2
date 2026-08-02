@@ -48,16 +48,16 @@ export default function Clients() {
         </Reveal>
       </div>
 
-      <div className="relative mt-14 overflow-hidden">
+      <motion.div
+        className="relative mt-14 overflow-hidden"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={containerVariants}
+      >
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-ink to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-ink to-transparent" />
-        <motion.div
-          className="flex w-max animate-marquee gap-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={containerVariants}
-        >
+        <div className="flex w-max animate-marquee gap-6">
           {clients.map((client) => (
             <motion.div key={`a-${client.name}`} variants={logoVariants}>
               <LogoCard client={client} />
@@ -66,8 +66,8 @@ export default function Clients() {
           {clients.map((client) => (
             <LogoCard key={`b-${client.name}`} client={client} />
           ))}
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </section>
   );
 }
