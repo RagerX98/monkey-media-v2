@@ -44,12 +44,12 @@ export default function Hero() {
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-paper/70"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-            Fun, Funky, Active Like A Monkey
+            Creative agency for brands with guts
           </motion.div>
 
           <RevealWords
-            text="Next Level Creative Agency"
-            accentWords={['Next', 'Level']}
+            text="Pure Monkey Energy"
+            accentWords={['Monkey']}
             accentClassName="text-purple"
             delay={0.15}
             stagger={0.09}
