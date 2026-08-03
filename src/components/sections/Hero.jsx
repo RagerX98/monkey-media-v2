@@ -24,11 +24,15 @@ export default function Hero() {
       <motion.div
         aria-hidden
         style={{ y: bgBlobY }}
+        animate={{ x: [0, 40, -30, 0], scale: [1, 1.08, 0.95, 1] }}
+        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
         className="pointer-events-none absolute -right-40 top-1/3 h-[500px] w-[500px] rounded-full bg-purple/20 blur-[120px]"
       />
-      <div
+      <motion.div
         aria-hidden
-        className="pointer-events-none absolute -left-40 bottom-0 h-[400px] w-[400px] rounded-full bg-gold/[0.14] blur-[120px]"
+        animate={{ x: [0, -35, 25, 0], y: [0, 30, -25, 0], scale: [1, 1.1, 0.94, 1] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 1.4 }}
+        className="pointer-events-none absolute -left-40 bottom-0 h-[400px] w-[400px] rounded-full bg-gold/[0.19] blur-[120px]"
       />
       <div
         aria-hidden
