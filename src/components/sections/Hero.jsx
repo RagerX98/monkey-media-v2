@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import MonkeyMascot from '../MonkeyMascot';
 import MarqueeStrip from '../MarqueeStrip';
@@ -7,6 +7,7 @@ import RevealWords from '../RevealWords';
 
 export default function Hero() {
   const sectionRef = useRef(null);
+  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
@@ -27,32 +28,36 @@ export default function Hero() {
         className="pointer-events-none absolute -right-40 top-1/3 h-[500px] w-[500px]"
       >
         <motion.div
-          animate={{
-            x: [0, 110, -70, 40, -110, 0],
-            y: [0, -90, 60, 120, -50, 0],
-            scale: [1, 1.12, 0.9, 1.08, 0.94, 1],
-          }}
+          animate={
+            reduceMotion
+              ? undefined
+              : {
+                  x: [0, 110, -70, 40, -110, 0],
+                  y: [0, -90, 60, 120, -50, 0],
+                }
+          }
           transition={{
             x: { duration: 19, repeat: Infinity, ease: 'easeInOut' },
             y: { duration: 14, repeat: Infinity, ease: 'easeInOut' },
-            scale: { duration: 23, repeat: Infinity, ease: 'easeInOut' },
           }}
-          className="h-full w-full rounded-full bg-purple/20 blur-[120px]"
+          className="h-full w-full rounded-full bg-purple/20 blur-[90px]"
         />
       </motion.div>
       <motion.div
         aria-hidden
-        animate={{
-          x: [0, -100, 80, -40, 100, 0],
-          y: [0, 80, -100, -50, 60, 0],
-          scale: [1, 1.15, 0.92, 1.1, 0.95, 1],
-        }}
+        animate={
+          reduceMotion
+            ? undefined
+            : {
+                x: [0, -100, 80, -40, 100, 0],
+                y: [0, 80, -100, -50, 60, 0],
+              }
+        }
         transition={{
           x: { duration: 21, repeat: Infinity, ease: 'easeInOut' },
           y: { duration: 16, repeat: Infinity, ease: 'easeInOut' },
-          scale: { duration: 25, repeat: Infinity, ease: 'easeInOut' },
         }}
-        className="pointer-events-none absolute -left-40 bottom-0 h-[400px] w-[400px] rounded-full bg-gold/[0.19] blur-[120px]"
+        className="pointer-events-none absolute -left-40 bottom-0 h-[400px] w-[400px] rounded-full bg-gold/[0.19] blur-[90px]"
       />
       <div
         aria-hidden

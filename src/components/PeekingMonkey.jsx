@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import mascotIcon from '../assets/mascot-icon-solid.png';
+import mascotIconWebp from '../assets/mascot-icon-solid.webp';
 
 const EDGES = ['top', 'right', 'bottom', 'left'];
 const MASCOT_SIZE = 52;
@@ -101,11 +102,14 @@ export default function PeekingMonkey() {
               transition={{ duration: 0.6, ease: 'easeOut' }}
               onClick={handleCatchAttempt}
             >
-              <img
-                src={mascotIcon}
-                alt=""
-                className="h-[52px] w-[52px] drop-shadow-[0_0_10px_rgba(255,215,0,0.45)]"
-              />
+              <picture>
+                <source srcSet={mascotIconWebp} type="image/webp" />
+                <img
+                  src={mascotIcon}
+                  alt=""
+                  className="h-[52px] w-[52px] drop-shadow-[0_0_10px_rgba(255,215,0,0.45)]"
+                />
+              </picture>
             </motion.div>
           </div>
         )}
@@ -123,11 +127,14 @@ export default function PeekingMonkey() {
             <span className="whitespace-nowrap rounded-full bg-paper px-3 py-1 text-xs font-black uppercase tracking-wide text-ink shadow-lg ring-2 ring-purple/50">
               {reaction}
             </span>
-            <img
-              src={mascotIcon}
-              alt=""
-              className="h-[52px] w-[52px] drop-shadow-[0_0_14px_rgba(139,92,246,0.6)]"
-            />
+            <picture>
+              <source srcSet={mascotIconWebp} type="image/webp" />
+              <img
+                src={mascotIcon}
+                alt=""
+                className="h-[52px] w-[52px] drop-shadow-[0_0_14px_rgba(139,92,246,0.6)]"
+              />
+            </picture>
           </motion.div>
         )}
       </AnimatePresence>
