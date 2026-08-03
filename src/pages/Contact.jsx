@@ -27,7 +27,7 @@ export default function Contact() {
           rel="noreferrer"
           className="flex-1 rounded-2xl border border-white/15 px-8 py-6 transition-colors hover:border-gold"
         >
-          <span className="block text-xs font-bold uppercase tracking-widest text-gold">
+          <span className="block text-xs font-bold uppercase tracking-widest text-[#25D366]">
             WhatsApp
           </span>
           <span className="mt-2 block font-semibold text-paper">Chat with us</span>
