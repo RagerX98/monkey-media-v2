@@ -90,7 +90,9 @@ export default function CTABanner() {
             onFocus={startRain}
             onTouchStart={startRain}
             onClick={handleClick}
-            className="inline-block rounded-full bg-purple px-10 py-4 text-sm font-bold uppercase tracking-wide text-paper transition-colors hover:bg-gold hover:text-ink"
+            className={`inline-block rounded-full px-10 py-4 text-sm font-bold uppercase tracking-wide transition-colors hover:bg-gold hover:text-ink ${
+              raining ? 'bg-gold text-ink' : 'bg-purple text-paper'
+            }`}
           >
             Book a Discovery Call
           </Link>
