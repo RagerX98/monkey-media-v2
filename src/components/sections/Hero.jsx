@@ -63,8 +63,8 @@ export default function Hero() {
             className="mt-8 max-w-lg text-lg text-paper/60"
           >
             A creative agency for startups, D2C brands, and personal brands who'd rather stand
-            out than fit in. We've unlocked the next level: social, influencer, branding,
-            content, performance, and web. One jungle. Zero compromise.
+            out than fit in: social, influencer, branding, content, performance, and web, one
+            jungle, one energy.
           </motion.p>
 
           <motion.div

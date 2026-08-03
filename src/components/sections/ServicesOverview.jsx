@@ -25,7 +25,7 @@ const TEASER_SERVICES = [
     number: '04',
     title: 'AI Photography & Visuals',
     blurb:
-      'Test a thousand looks before the real shoot. AI product photography, model creation, and visual experiments. Perfect for D2C brands that move fast.',
+      "A faster, cheaper alternative to traditional shoots. Product photography, full model shoots for your website and marketplaces, realistic social visuals, and AI video, generated entirely with AI, so you get everything a shoot would give you without booking one.",
   },
 ];
 

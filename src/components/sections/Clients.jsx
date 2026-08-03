@@ -56,7 +56,7 @@ export default function Clients() {
             Brands We've Worked With
           </span>
           <h2 className="mx-auto mt-4 max-w-xl text-3xl font-black uppercase tracking-tight text-paper md:text-5xl">
-            From inside these teams to building for you
+            From global names to fast-growing D2C labels, here's a look at who trusts us.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-paper/50">
             Whether we built with them or for them, we understand what it takes to move fast and
