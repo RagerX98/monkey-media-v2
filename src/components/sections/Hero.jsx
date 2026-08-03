@@ -49,8 +49,8 @@ export default function Hero() {
 
           <RevealWords
             text="Pure Monkey Energy"
-            accentWords={['Monkey']}
-            accentClassName="text-purple"
+            accentWords={['Energy']}
+            accentClassName="text-gold"
             delay={0.15}
             stagger={0.09}
             className="text-6xl font-black uppercase leading-[0.95] tracking-tight text-paper sm:text-7xl lg:text-8xl"
