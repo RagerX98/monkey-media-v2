@@ -1,13 +1,33 @@
-import { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Reveal from '../Reveal';
 import MonkeyMascot from '../MonkeyMascot';
+import BananaRain from '../BananaRain';
 import { gsap, ScrollTrigger } from '../../lib/gsap';
+
+const RAIN_DURATION = 2200;
+const TAP_NAV_DELAY = 350;
 
 export default function CTABanner() {
   const sectionRef = useRef(null);
   const buttonRef = useRef(null);
   const glowRef = useRef(null);
+  const [raining, setRaining] = useState(false);
+  const rainTimer = useRef(null);
+  const navigate = useNavigate();
+
+  function startRain() {
+    setRaining(true);
+    clearTimeout(rainTimer.current);
+    rainTimer.current = setTimeout(() => setRaining(false), RAIN_DURATION);
+  }
+
+  function handleClick(e) {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    startRain();
+    setTimeout(() => navigate('/pricing'), TAP_NAV_DELAY);
+  }
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -40,6 +60,7 @@ export default function CTABanner() {
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple/15 blur-[140px]"
       />
+      {raining && <BananaRain />}
       <div className="relative mx-auto flex max-w-4xl flex-col items-center px-6 text-center md:px-10">
         <Reveal>
           <MonkeyMascot size={110} className="mx-auto mb-8" />
@@ -65,6 +86,10 @@ export default function CTABanner() {
           <Link
             ref={buttonRef}
             to="/pricing"
+            onMouseEnter={startRain}
+            onFocus={startRain}
+            onTouchStart={startRain}
+            onClick={handleClick}
             className="inline-block rounded-full bg-purple px-10 py-4 text-sm font-bold uppercase tracking-wide text-paper transition-colors hover:bg-gold hover:text-ink"
           >
             Book a Discovery Call

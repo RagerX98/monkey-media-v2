@@ -1,13 +1,43 @@
-import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import PageFade from '../components/PageFade';
 import SubtleReveal from '../components/SubtleReveal';
 import Reveal from '../components/Reveal';
+import BananaRain from '../components/BananaRain';
 import { clients } from '../data/clients';
 
+const ENTRY_RAIN_DURATION = 2200;
+const MOBILE_BANANA_COUNT = 14;
+const DESKTOP_BANANA_COUNT = 26;
+
 export default function Portfolio() {
+  const [raining, setRaining] = useState(true);
+  const [bananaCount, setBananaCount] = useState(DESKTOP_BANANA_COUNT);
+
+  useEffect(() => {
+    if (window.matchMedia('(max-width: 640px)').matches) {
+      setBananaCount(MOBILE_BANANA_COUNT);
+    }
+    const t = setTimeout(() => setRaining(false), ENTRY_RAIN_DURATION);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <PageFade className="mx-auto max-w-7xl px-6 pb-32 pt-40 md:px-10">
+      <AnimatePresence>
+        {raining && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="pointer-events-none fixed inset-0 z-40"
+          >
+            <BananaRain count={bananaCount} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="max-w-2xl">
         <SubtleReveal as="span" className="text-xs font-bold uppercase tracking-widest text-purple">
           Our Work
