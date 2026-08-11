@@ -6,6 +6,7 @@ import logoMarkWebp from '../assets/logo-mark.webp';
 
 const LINKS = [
   { to: '/', label: 'Home' },
+  { to: '/about', label: 'About' },
   { to: '/services', label: 'Services' },
   { to: '/portfolio', label: 'Portfolio' },
   { to: '/pricing', label: 'Pricing' },
