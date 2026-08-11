@@ -1,13 +1,13 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import MonkeyMascot from '../MonkeyMascot';
 import MarqueeStrip from '../MarqueeStrip';
 import RevealWords from '../RevealWords';
+import AmbientSmoke from '../AmbientSmoke';
 
 export default function Hero() {
   const sectionRef = useRef(null);
-  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
@@ -15,50 +15,13 @@ export default function Hero() {
 
   // Mascot lags behind normal scroll speed for a subtle depth effect (transform-only, GPU friendly).
   const mascotY = useTransform(scrollYProgress, [0, 1], [0, 140]);
-  const bgBlobY = useTransform(scrollYProgress, [0, 1], [0, 60]);
 
   return (
     <section
       ref={sectionRef}
       className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-ink pt-24"
     >
-      <motion.div
-        aria-hidden
-        style={{ y: bgBlobY }}
-        className="pointer-events-none absolute -right-40 top-1/3 h-[500px] w-[500px]"
-      >
-        <motion.div
-          animate={
-            reduceMotion
-              ? undefined
-              : {
-                  x: [0, 110, -70, 40, -110, 0],
-                  y: [0, -90, 60, 120, -50, 0],
-                }
-          }
-          transition={{
-            x: { duration: 19, repeat: Infinity, ease: 'easeInOut' },
-            y: { duration: 14, repeat: Infinity, ease: 'easeInOut' },
-          }}
-          className="h-full w-full rounded-full bg-purple/20 blur-[90px]"
-        />
-      </motion.div>
-      <motion.div
-        aria-hidden
-        animate={
-          reduceMotion
-            ? undefined
-            : {
-                x: [0, -100, 80, -40, 100, 0],
-                y: [0, 80, -100, -50, 60, 0],
-              }
-        }
-        transition={{
-          x: { duration: 21, repeat: Infinity, ease: 'easeInOut' },
-          y: { duration: 16, repeat: Infinity, ease: 'easeInOut' },
-        }}
-        className="pointer-events-none absolute -left-40 bottom-0 h-[400px] w-[400px] rounded-full bg-gold/[0.19] blur-[90px]"
-      />
+      <AmbientSmoke />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:64px_64px]"
