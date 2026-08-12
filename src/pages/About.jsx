@@ -3,7 +3,6 @@ import SubtleReveal from '../components/SubtleReveal';
 import Reveal from '../components/Reveal';
 import MonkeyMascot from '../components/MonkeyMascot';
 import AmbientSmoke from '../components/AmbientSmoke';
-import { team } from '../data/team';
 
 const STATS = [
   { value: '6+', label: 'Years in the Jungle' },
@@ -106,33 +105,6 @@ export default function About() {
                   <span className="text-sm font-bold text-purple">{value.number}</span>
                   <h3 className="mt-2 text-2xl font-black uppercase text-paper">{value.title}</h3>
                   <p className="mt-3 text-paper/60">{value.blurb}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-28">
-          <Reveal className="max-w-xl">
-            <span className="text-xs font-bold uppercase tracking-widest text-purple">
-              Meet the Troop
-            </span>
-            <h2 className="mt-4 text-3xl font-black uppercase tracking-tight text-paper md:text-5xl">
-              The <span className="text-gold">team.</span>
-            </h2>
-          </Reveal>
-
-          <div className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {team.map((member, i) => (
-              <Reveal key={member.name} delay={i * 0.08} y={30}>
-                <div className="group flex flex-col items-center rounded-2xl border border-white/10 bg-void px-6 py-10 text-center transition-colors hover:border-gold">
-                  <div className="flex h-20 w-20 items-center justify-center rounded-full border border-purple/40 bg-purple/10 text-xl font-black text-purple transition-colors group-hover:border-gold group-hover:bg-gold/10 group-hover:text-gold">
-                    {member.initials}
-                  </div>
-                  <h3 className="mt-5 text-base font-black uppercase text-paper">{member.name}</h3>
-                  <span className="mt-1 text-xs font-bold uppercase tracking-widest text-paper/50">
-                    {member.role}
-                  </span>
                 </div>
               </Reveal>
             ))}
