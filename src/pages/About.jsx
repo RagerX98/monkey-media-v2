@@ -3,6 +3,7 @@ import SubtleReveal from '../components/SubtleReveal';
 import Reveal from '../components/Reveal';
 import MonkeyMascot from '../components/MonkeyMascot';
 import AmbientSmoke from '../components/AmbientSmoke';
+import OrbitField from '../components/OrbitField';
 
 const STATS = [
   { value: '6+', label: 'Years in the Jungle' },
@@ -109,6 +110,24 @@ export default function About() {
               </Reveal>
             ))}
           </div>
+        </div>
+
+        <div className="mt-28">
+          <Reveal className="max-w-xl">
+            <span className="text-xs font-bold uppercase tracking-widest text-purple">
+              Meet the Troop
+            </span>
+            <h2 className="mt-4 text-3xl font-black uppercase tracking-tight text-paper md:text-5xl">
+              The <span className="text-gold">team.</span>
+            </h2>
+            <p className="mt-4 text-paper/60">
+              Profiles are swinging in soon. Until then, tap the bananas and feed the monkey.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.1} className="mt-12">
+            <OrbitField />
+          </Reveal>
         </div>
 
         <Reveal className="mt-28 flex flex-col items-center gap-4 text-center" delay={0.1}>
