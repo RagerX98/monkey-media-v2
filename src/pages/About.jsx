@@ -8,7 +8,7 @@ import OrbitField from '../components/OrbitField';
 const STATS = [
   { value: '7+', label: 'Years in the Jungle' },
   { value: '10+', label: 'Brands Launched' },
-  { value: '40+', label: 'Team Monkeys' },
+  { value: '98%', label: 'Client Retention Rate' },
   { value: '4', label: 'Countries Reached' },
 ];
 
@@ -67,8 +67,8 @@ export default function About() {
               growing, and every new Monkey we bring in shares that exact obsession.
             </p>
             <p className="mt-4 text-lg leading-relaxed text-paper/70">
-              We're strategists, creators, and certified bananas-for-brands people who believe
-              good marketing shouldn't feel like homework, for us or for you.
+              We're strategists, creators, and full-blown brand nerds who believe good
+              marketing shouldn't feel like homework, for us or for you.
             </p>
           </Reveal>
 
