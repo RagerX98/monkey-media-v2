@@ -6,10 +6,10 @@ import AmbientSmoke from '../components/AmbientSmoke';
 import OrbitField from '../components/OrbitField';
 
 const STATS = [
-  { value: '6+', label: 'Years in the Jungle' },
-  { value: '150+', label: 'Brands Launched' },
+  { value: '7+', label: 'Years in the Jungle' },
+  { value: '10+', label: 'Brands Launched' },
   { value: '40+', label: 'Team Monkeys' },
-  { value: '12', label: 'Countries Reached' },
+  { value: '4', label: 'Countries Reached' },
 ];
 
 const VALUES = [
