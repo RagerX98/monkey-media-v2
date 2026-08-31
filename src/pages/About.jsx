@@ -52,8 +52,8 @@ export default function About() {
             The monkeys behind the <span className="text-gold">madness.</span>
           </SubtleReveal>
           <SubtleReveal as="p" delay={0.12} className="mt-4 max-w-lg text-paper/60">
-            Founded by people tired of agencies that talk big and ship slow, Monkey Media exists
-            to make brands louder, faster, and a little more unhinged. In a good way.
+            We built Monkey Media because we got tired of watching brilliant ideas die in
+            bad execution.
           </SubtleReveal>
         </div>
 
@@ -63,10 +63,8 @@ export default function About() {
               Our Story
             </span>
             <p className="mt-4 text-lg leading-relaxed text-paper/70">
-              We started in a one-room office with a laptop, a caffeine problem, and a hunch
-              that most agencies were boring on purpose. A few years and a few hundred
-              campaigns later, that hunch turned into a team that builds brands the internet
-              actually stops for.
+              Two people. One vision. Build an agency that actually delivers. Now we're
+              growing, and every new Monkey we bring in shares that exact obsession.
             </p>
             <p className="mt-4 text-lg leading-relaxed text-paper/70">
               We're strategists, creators, and certified bananas-for-brands people who believe
