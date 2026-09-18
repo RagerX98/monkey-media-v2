@@ -25,7 +25,7 @@ const TEASER_SERVICES = [
     number: '04',
     title: 'AI Photography & Visuals',
     blurb:
-      "A faster, cheaper alternative to traditional shoots. Product photography, full model shoots for your website and marketplaces, realistic social visuals, and AI video, generated entirely with AI, so you get everything a shoot would give you without booking one.",
+      "Everything a traditional shoot gives you: product photography, model shoots, social visuals, video, without booking one. Faster. Cheaper. AI-generated.",
   },
 ];
 
