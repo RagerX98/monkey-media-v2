@@ -1,6 +1,7 @@
 import PageFade from '../components/PageFade';
 import SubtleReveal from '../components/SubtleReveal';
 import Reveal from '../components/Reveal';
+import CountUp from '../components/CountUp';
 import MonkeyMascot from '../components/MonkeyMascot';
 import AmbientSmoke from '../components/AmbientSmoke';
 import OrbitField from '../components/OrbitField';
@@ -78,9 +79,10 @@ export default function About() {
                 key={stat.label}
                 className="rounded-2xl border border-white/10 bg-void p-6 transition-colors hover:border-gold"
               >
-                <span className="block text-3xl font-black text-gold md:text-4xl">
-                  {stat.value}
-                </span>
+                <CountUp
+                  value={stat.value}
+                  className="block text-3xl font-black text-gold md:text-4xl"
+                />
                 <span className="mt-2 block text-sm text-paper/60">{stat.label}</span>
               </div>
             ))}
