@@ -74,7 +74,13 @@ egg.
 
 **Layout/chrome:**
 - `Navbar.jsx` — fixed header, active-link underline, backdrop-blur after
-  12px of scroll, animated hamburger menu on mobile.
+  12px of scroll, and a full-screen clip-path takeover menu on mobile.
+  **The menu is portalled to `<body>` and must stay that way:** the
+  header's `backdrop-filter` establishes a containing block for
+  `position: fixed` descendants, so a menu rendered inside the header
+  collapses into the ~76px header box on any scrolled page. The header
+  also raises its z-index above the panel while open — without that the
+  close button sits under the portalled menu and traps the user.
 - `Footer.jsx` — sitemap columns + contact links, fades in on scroll via
   Framer `whileInView`.
 
@@ -165,7 +171,12 @@ animation code):
   keep both in sync manually if a teased service's copy changes, as
   happened 2026-09-18). Renders as cards on `sm:` and up, as an accordion
   below that.
-- `Clients.jsx` — logo marquee driven by **scroll velocity**: a rAF loop
+- `Clients.jsx` — logo marquee, **drag-to-scrub plus scroll velocity**.
+  A thumb (or mouse) can push the strip directly; releasing hands the
+  flick to a signed momentum channel that decays back into the base
+  drift. `touch-action: pan-y` on the viewport keeps vertical page
+  scrolling. Note `releasePointerCapture` throws `NotFoundError` once the
+  pointer is gone — assign state before releasing. Underneath, a rAF loop
   transforms the single track element, surging and skewing as you scroll
   and easing back to a drift. Reads `window.scrollY` *inside the tick*
   rather than from a scroll listener, because iOS throttles scroll events

@@ -3,6 +3,55 @@
 Newest first. Each entry ties to a commit hash where one exists. See
 logbook/README.md for how to add to this.
 
+## 2026-09-23 (later) — `436b5c5`, `0e5c4e2`
+
+**Three post-deploy fixes, two of them reported from the live site**
+
+### Services page scrolled sideways (`436b5c5`)
+
+`ServiceCard` enters from `x: ±70`, so any card still waiting on its
+scroll trigger sat 70px outside the container: scrollWidth 719 against a
+673 viewport, with scrollX reaching 46. `body { overflow-x: hidden }`
+hid it visually, which is why it survived the first verification pass —
+but the page really did scroll, which on iOS reads as a horizontal
+rubber-band on every drag. Fixed with `overflow-x-clip` on the grid
+(not `overflow-hidden`, which would clip the vertical hover lift too).
+
+**Check `maxScrollX`, not just `scrollWidth`, and never trust
+`overflow-x: hidden` on body to mean "no overflow".**
+
+### Mobile menu collapsed into the header (`0e5c4e2`)
+
+Reported as "glitches on half the page" — it rendered as a 76px strip
+instead of full screen, but *only once scrolled*, which is what made it
+look intermittent.
+
+**The header gains `backdrop-filter: blur(12px)` past 12px of scroll,
+and a backdrop-filter establishes a containing block for
+`position: fixed` descendants.** The panel therefore positioned against
+the header box rather than the viewport. Fixed by portalling the panel
+to `<body>`.
+
+That fix then exposed a second bug: the burger's `z-index` only competed
+inside the header's old stacking context, so the portalled panel (z-65)
+covered the header (z-40) and tapping the X hit the menu instead —
+trapping the user in it. The header now rises above the panel while
+open and drops its scrolled background.
+
+### Logo wall too fast, plus drag-to-scrub (`0e5c4e2`)
+
+Base drift 1.6 → 0.75px/frame (~106 → ~45px/s); scroll surge gain 0.5 →
+0.35. Velocity reactivity itself unchanged. Added pointer-event
+drag-to-scrub so the strip can be pushed with a thumb (or dragged with a
+mouse) while still drifting; releasing hands the flick to a signed
+momentum channel that decays back into the drift. `touch-action: pan-y`
+keeps vertical page scrolling, so grabbing the strip never traps a thumb.
+
+**Trap worth knowing: `releasePointerCapture` throws `NotFoundError`
+when the pointer has already gone.** Calling it before assigning the
+throw aborted the handler and silently swallowed every flick. Set state
+first; treat both capture calls as non-fatal.
+
 ## 2026-09-23 — `fa73def`
 
 **Motion & cosmetics pass**
