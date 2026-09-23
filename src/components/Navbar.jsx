@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { NavLink, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import CTAButton from './CTAButton';
@@ -64,8 +65,20 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
-        scrolled ? 'bg-ink/90 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.08)]' : 'bg-transparent'
+      // While the takeover is open the header has to sit ABOVE it, or the
+      // close button is unreachable: the menu is portalled to <body>, so the
+      // burger's own z-index no longer competes inside the header's stacking
+      // context. Also dropped back to transparent here — the scrolled
+      // background would otherwise paint a bar across the open menu, and its
+      // backdrop-filter is exactly what broke the panel in the first place.
+      className={`fixed inset-x-0 top-0 transition-all duration-300 ${
+        menuOpen
+          ? 'z-[70] bg-transparent'
+          : `z-40 ${
+              scrolled
+                ? 'bg-ink/90 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.08)]'
+                : 'bg-transparent'
+            }`
       }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-10">
@@ -134,58 +147,67 @@ export default function Navbar() {
         </button>
       </nav>
 
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            id="mobile-menu"
-            initial={reduceMotion ? { opacity: 0 } : { clipPath: CLOSED }}
-            animate={reduceMotion ? { opacity: 1 } : { clipPath: OPEN }}
-            exit={reduceMotion ? { opacity: 0 } : { clipPath: CLOSED }}
-            transition={
-              reduceMotion
-                ? { duration: 0.15 }
-                : { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
-            }
-            className="fixed inset-0 z-[65] bg-[linear-gradient(160deg,#150f22,#0d0d0d_60%)] md:hidden"
-          >
-            <motion.nav
-              variants={LIST}
-              initial="hidden"
-              animate="visible"
-              className="flex h-full flex-col justify-center gap-1 px-7"
+      {/* Portalled to <body> on purpose. The header gains
+          `backdrop-filter: blur(12px)` once scrolled past 12px, and a
+          backdrop-filter establishes a containing block for fixed-position
+          descendants — so a menu rendered inside the header positioned itself
+          against the 76px header box instead of the viewport, collapsing into
+          the top strip on any scrolled page. */}
+      {createPortal(
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              id="mobile-menu"
+              initial={reduceMotion ? { opacity: 0 } : { clipPath: CLOSED }}
+              animate={reduceMotion ? { opacity: 1 } : { clipPath: OPEN }}
+              exit={reduceMotion ? { opacity: 0 } : { clipPath: CLOSED }}
+              transition={
+                reduceMotion
+                  ? { duration: 0.15 }
+                  : { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
+              }
+              className="fixed inset-0 z-[65] bg-[linear-gradient(160deg,#150f22,#0d0d0d_60%)] md:hidden"
             >
-              {LINKS.map((link, i) => (
-                <motion.div key={link.to} variants={ITEM}>
-                  <NavLink
-                    to={link.to}
-                    end={link.to === '/'}
-                    onClick={() => setMenuOpen(false)}
-                    className={({ isActive }) =>
-                      // Fluid rather than a flat text-4xl: in Syne at 36px,
-                      // "PORTFOLIO" ran 46px past the gutter on a 390px phone,
-                      // and Services/Contact cleared it by under 7px.
-                      `flex items-baseline gap-3 py-2 text-[clamp(1.6rem,7.5vw,2.25rem)] font-display font-extrabold uppercase tracking-tight ${
-                        isActive ? 'text-gold' : 'text-paper'
-                      }`
-                    }
-                  >
-                    <span className="font-sans text-xs font-bold tracking-widest text-purple">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    {link.label}
-                  </NavLink>
-                </motion.div>
-              ))}
+              <motion.nav
+                variants={LIST}
+                initial="hidden"
+                animate="visible"
+                className="flex h-full flex-col justify-center gap-1 px-7"
+              >
+                {LINKS.map((link, i) => (
+                  <motion.div key={link.to} variants={ITEM}>
+                    <NavLink
+                      to={link.to}
+                      end={link.to === '/'}
+                      onClick={() => setMenuOpen(false)}
+                      className={({ isActive }) =>
+                        // Fluid rather than a flat text-4xl: in Syne at 36px,
+                        // "PORTFOLIO" ran 46px past the gutter on a 390px phone,
+                        // and Services/Contact cleared it by under 7px.
+                        `flex items-baseline gap-3 py-2 text-[clamp(1.6rem,7.5vw,2.25rem)] font-display font-extrabold uppercase tracking-tight ${
+                          isActive ? 'text-gold' : 'text-paper'
+                        }`
+                      }
+                    >
+                      <span className="font-sans text-xs font-bold tracking-widest text-purple">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      {link.label}
+                    </NavLink>
+                  </motion.div>
+                ))}
 
-              <motion.div variants={ITEM} className="mt-8">
-                <CTAButton to="/pricing" onClick={() => setMenuOpen(false)} size="lg">
-                  Book a Call
-                </CTAButton>
-              </motion.div>
-            </motion.nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                <motion.div variants={ITEM} className="mt-8">
+                  <CTAButton to="/pricing" onClick={() => setMenuOpen(false)} size="lg">
+                    Book a Call
+                  </CTAButton>
+                </motion.div>
+              </motion.nav>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </header>
   );
 }
