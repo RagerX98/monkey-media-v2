@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Reveal from '../Reveal';
+import CTAButton from '../CTAButton';
 import MonkeyMascot from '../MonkeyMascot';
 import BananaRain from '../BananaRain';
-import { gsap, ScrollTrigger } from '../../lib/gsap';
+import { gsap } from '../../lib/gsap';
 
 const RAIN_DURATION = 2200;
 const TAP_NAV_DELAY = 350;
 
 export default function CTABanner() {
   const sectionRef = useRef(null);
-  const buttonRef = useRef(null);
+  const buttonWrapRef = useRef(null);
   const glowRef = useRef(null);
   const [raining, setRaining] = useState(false);
   const rainTimer = useRef(null);
@@ -30,7 +31,9 @@ export default function CTABanner() {
   }
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
       const trigger = {
         trigger: sectionRef.current,
         start: 'top 85%',
@@ -38,8 +41,11 @@ export default function CTABanner() {
         scrub: 0.6,
       };
 
+      // Scrubbed on the wrapper, never on the button: CTAButton animates its
+      // own transform via Framer (hover/press), and two libraries writing the
+      // same transform would overwrite each other frame to frame.
       gsap.fromTo(
-        buttonRef.current,
+        buttonWrapRef.current,
         { scale: 0.9 },
         { scale: 1, ease: 'none', scrollTrigger: trigger }
       );
@@ -49,9 +55,17 @@ export default function CTABanner() {
         { opacity: 0, scale: 0.6 },
         { opacity: 0.6, scale: 1.2, ease: 'none', scrollTrigger: trigger }
       );
-    }, sectionRef);
+    });
 
-    return () => ctx.revert();
+    // A scrub ties motion directly to the scroll wheel, which is the most
+    // uncomfortable kind for a motion-sensitive visitor. Settle both at their
+    // end state instead.
+    mm.add('(prefers-reduced-motion: reduce)', () => {
+      gsap.set(buttonWrapRef.current, { scale: 1 });
+      gsap.set(glowRef.current, { opacity: 0.6, scale: 1.2 });
+    });
+
+    return () => mm.revert();
   }, []);
 
   return (
@@ -66,7 +80,7 @@ export default function CTABanner() {
           <MonkeyMascot size={110} className="mx-auto mb-8" />
         </Reveal>
         <Reveal delay={0.1}>
-          <h2 className="text-4xl font-black uppercase leading-tight tracking-tight text-paper md:text-6xl">
+          <h2 className="text-4xl font-display font-extrabold uppercase leading-tight tracking-tight text-paper md:text-6xl">
             Ready to go <span className="text-purple">bananas?</span>
           </h2>
         </Reveal>
@@ -83,19 +97,19 @@ export default function CTABanner() {
             className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-gold blur-2xl"
             style={{ opacity: 0, transform: 'scale(0.6)' }}
           />
-          <Link
-            ref={buttonRef}
-            to="/pricing"
-            onMouseEnter={startRain}
-            onFocus={startRain}
-            onTouchStart={startRain}
-            onClick={handleClick}
-            className={`inline-block rounded-full px-10 py-4 text-sm font-bold uppercase tracking-wide transition-colors hover:bg-gold hover:text-ink ${
-              raining ? 'bg-gold text-ink' : 'bg-purple text-paper'
-            }`}
-          >
-            Book a Discovery Call
-          </Link>
+          <span ref={buttonWrapRef} className="inline-block will-change-transform">
+            <CTAButton
+              to="/pricing"
+              size="lg"
+              onMouseEnter={startRain}
+              onFocus={startRain}
+              onTouchStart={startRain}
+              onClick={handleClick}
+              className={raining ? 'bg-gold text-ink' : undefined}
+            >
+              Book a Discovery Call
+            </CTAButton>
+          </span>
         </Reveal>
       </div>
     </section>

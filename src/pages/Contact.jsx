@@ -4,7 +4,7 @@ import SubtleReveal from '../components/SubtleReveal';
 export default function Contact() {
   return (
     <PageFade className="mx-auto flex max-w-3xl flex-col items-center px-6 pb-32 pt-40 text-center md:px-10">
-      <SubtleReveal as="h1" className="text-4xl font-black uppercase tracking-tight text-paper md:text-6xl">
+      <SubtleReveal as="h1" className="text-4xl font-display font-extrabold uppercase tracking-tight text-paper md:text-6xl">
         Say <span className="text-purple">Hey</span>
       </SubtleReveal>
       <SubtleReveal as="p" delay={0.08} className="mt-4 max-w-md text-paper/60">

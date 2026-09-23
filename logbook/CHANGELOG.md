@@ -3,6 +3,89 @@
 Newest first. Each entry ties to a commit hash where one exists. See
 logbook/README.md for how to add to this.
 
+## 2026-09-23 — motion & cosmetics pass
+
+**Nine changes from a site-wide motion audit, plus one performance
+root-cause that turned out to matter more than any of them.**
+
+Shipped in one pass: shared service card, shared CTA button with press
+states, custom cursor, full-screen mobile menu, character-mask headline
+with a gold sweep, reduced-motion coverage for GSAP, capped grid
+stagger, a display typeface, and a scroll-velocity logo wall.
+
+### The performance finding (read this one)
+
+The site was running at **45fps with 22 dropped frames per 89** on the
+homepage *before any of this work* — measured with zero cursor code on
+the page, so it was never the cursor.
+
+Cause: in `AmbientSmoke.jsx` the outer parallax wrappers carried
+`will-change-transform`, but the **inner blurred blobs** — the ones
+actually animating `x`/`y` on an infinite loop — did not. A 70–90px blur
+on a ~300px element was being re-rasterised every frame. Adding
+`will-change-transform` to the inner blobs took the homepage to **60fps,
+0 dropped frames**. This affected the hero, the About page, and every
+scroll animation on the site; it only became visible once a custom
+cursor gave the eye something to compare against the real pointer.
+
+**Lesson for future sessions: a blurred element that animates needs its
+own layer promotion, on the element carrying the blur — not its parent.**
+
+### New components
+
+- `CTAButton.jsx` — the one button on the site, replacing nine copies of
+  the same Tailwind string. Framer owns `transform` outright and CSS is
+  left with colour only. That split is why press states were possible at
+  all: the old `transition-transform hover:scale-105` fought any Framer
+  transform layered on top. Touch devices now get feedback, since
+  `whileTap` fires on pointerdown where `hover:` never did.
+- `ServiceCard.jsx` — shared by the homepage teaser and the Services
+  page, which previously rendered a plain bordered div while its own
+  teaser had the full treatment. Adds a cursor-tracked spotlight and
+  gradient rim (opacity-only pseudo-elements, so hovering costs no
+  layout).
+- `CustomCursor.jsx` — dot that morphs into the mascot over anything
+  interactive. Fine-pointer + no-reduced-motion only; `cursor: none` is
+  applied only once the component is live, so a JS failure can't leave a
+  visitor with no cursor.
+
+### Bugs found and fixed while verifying
+
+Five of these were caught only by re-checking, and are worth knowing:
+
+1. **`animation-fill-mode: both` pinned a compositor layer per glyph.**
+   The shine's final keyframe retained a non-`none` `filter` forever:
+   48.6fps / 18 dropped, against 57.8 once released. Removing the
+   fill-mode fixed it. The animation looked perfect either way — this
+   was only ever visible in a profile.
+2. **The gold sweep was structurally broken, not mistuned.**
+   `background-clip: text` cannot reach through the per-character
+   `.reveal-mask` spans (`overflow: hidden` inline-blocks break the
+   clip), while `-webkit-text-fill-color: transparent` still inherits to
+   the glyphs — so "ENERGY" rendered *completely invisible*. Replaced
+   with a per-glyph brightness pulse, which at rest is exactly
+   `brightness(1)`, making the failure mode impossible rather than
+   merely avoided.
+3. **Per-character inline-blocks break words mid-word.** Without
+   `white-space: nowrap` on each word wrapper, the hero read
+   "MONK / EY". Syne compounded it: at the old flat `text-6xl`,
+   "MONKEY" measured 449px against 342px available on a 390px phone.
+   Fixed with nowrap plus a fluid clamp below `sm`.
+4. `Hero.jsx` still passed `stagger={0.09}`, a per-*word* value now
+   applied per-*character*, stretching the headline over 1.44s.
+5. "PORTFOLIO" in the new mobile menu ran 46px past the gutter in Syne.
+
+### Verified
+
+60fps idle and under hard scrolling, desktop and mobile; logo wall
+steady at 59.9fps through a flick with skew clamped under 7°; all five
+pages free of horizontal overflow; lint and build clean.
+
+Not verified at runtime: `prefers-reduced-motion`, which can't be
+emulated in the preview pane — the reduce branches are confirmed
+structurally (all four GSAP components register both queries) rather
+than observed.
+
 ## 2026-09-21 — `270f026`
 
 **Add smooth count-up animation to About page stat cards**

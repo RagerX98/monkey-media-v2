@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Reveal from '../Reveal';
+import ServiceCard from '../ServiceCard';
+import CTAButton from '../CTAButton';
 
 const TEASER_SERVICES = [
   {
@@ -28,33 +29,6 @@ const TEASER_SERVICES = [
       "Everything a traditional shoot gives you: product photography, model shoots, social visuals, video, without booking one. Faster. Cheaper. AI-generated.",
   },
 ];
-
-function ServiceCard({ service, index }) {
-  const fromLeft = index % 2 === 0;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: fromLeft ? -70 : 70 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.7, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-void p-8 transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1.5 hover:border-purple/60 hover:shadow-[0_20px_50px_-14px_rgba(139,92,246,0.4)] lg:p-10"
-    >
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-purple/0 blur-3xl transition-colors duration-300 ease-out group-hover:bg-purple/20"
-      />
-
-      <span className="relative text-sm font-bold text-purple">{service.number}</span>
-      <h3 className="relative mt-6 text-2xl font-black uppercase leading-tight text-paper lg:text-[1.75rem]">
-        {service.title}
-      </h3>
-      <p className="relative mt-3 text-sm text-paper/60 transition-colors duration-300 ease-out group-hover:text-paper/85">
-        {service.blurb}
-      </p>
-    </motion.div>
-  );
-}
 
 function Chevron({ isOpen }) {
   return (
@@ -125,7 +99,7 @@ export default function ServicesOverview() {
           <span className="text-xs font-bold uppercase tracking-widest text-purple">
             What We Do
           </span>
-          <h2 className="mt-4 text-4xl font-black uppercase tracking-tight text-paper md:text-6xl">
+          <h2 className="mt-4 text-4xl font-display font-extrabold uppercase tracking-tight text-paper md:text-6xl">
             A taste of the <span className="text-gold">jungle.</span>
           </h2>
           <p className="mx-auto mt-4 max-w-md text-paper/50">
@@ -151,12 +125,9 @@ export default function ServicesOverview() {
         </div>
 
         <Reveal delay={0.25} className="mt-14 flex justify-center">
-          <Link
-            to="/services"
-            className="rounded-full bg-purple px-10 py-4 text-sm font-bold uppercase tracking-wide text-paper transition-transform duration-300 hover:scale-105 hover:bg-gold hover:text-ink"
-          >
+          <CTAButton to="/services" size="lg">
             See All Services
-          </Link>
+          </CTAButton>
         </Reveal>
       </div>
     </section>

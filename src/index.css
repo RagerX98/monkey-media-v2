@@ -3,9 +3,19 @@
 @import "@fontsource/montserrat/700.css";
 @import "@fontsource/montserrat/800.css";
 @import "@fontsource/montserrat/900.css";
+/* Display face, used only at display sizes — see --font-display below. */
+@import "@fontsource/syne/700.css";
+@import "@fontsource/syne/800.css";
 
 @theme {
   --font-sans: "Montserrat", system-ui, sans-serif;
+
+  /* Syne carries the page and section headlines; Montserrat keeps everything
+     else, including card titles and UI-scale text where Syne's wider, quirkier
+     letterforms read as cramped. Applied deliberately via the `font-display`
+     utility rather than a blanket `h1, h2` rule, because several h2s on the
+     site are card labels rather than display headings. */
+  --font-display: "Syne", "Montserrat", system-ui, sans-serif;
 
   --color-ink: #0d0d0d;
   --color-void: #161616;
@@ -50,6 +60,192 @@ body {
 ::selection {
   background: var(--color-purple);
   color: var(--color-paper);
+}
+
+/* ---------------------------------------------------------------------------
+   Service card: cursor-tracked spotlight + gradient border.
+
+   Both layers are opacity-only transitions sitting on pseudo-elements, so a
+   hover never touches layout or paint on the card itself and stays on the
+   compositor. --mx/--my are written by ServiceCard.jsx on pointermove
+   (rAF-throttled, fine pointers only); they default to the card's top-right
+   so the resting look matches the old static corner blob.
+--------------------------------------------------------------------------- */
+.svc-card {
+  --mx: 100%;
+  --my: 0%;
+  position: relative;
+  isolation: isolate;
+}
+
+.svc-card::before,
+.svc-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease-out;
+  z-index: -1;
+}
+
+/* the spotlight itself */
+.svc-card::before {
+  background: radial-gradient(
+    260px circle at var(--mx) var(--my),
+    rgba(139, 92, 246, 0.22),
+    transparent 65%
+  );
+}
+
+/* a 1px gradient rim, drawn by masking out the card's interior */
+.svc-card::after {
+  padding: 1px;
+  background: linear-gradient(130deg, var(--color-purple), transparent 45%, var(--color-gold));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.svc-card:hover::before,
+.svc-card:hover::after,
+.svc-card:focus-within::before,
+.svc-card:focus-within::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svc-card::before,
+  .svc-card::after {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Custom cursor. The class is added to <html> by CustomCursor.jsx only once
+   it has confirmed a fine pointer and no reduced-motion preference, so touch
+   devices and no-JS visitors keep their native cursor.
+--------------------------------------------------------------------------- */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Headline character reveal (RevealWords.jsx).
+
+   The mask clips each glyph so it slides out from behind a hard edge. It must
+   be inline-block with hidden overflow; the bottom padding keeps descenders
+   (g, y, p) from being shaved by the clip, and the matching negative margin
+   stops that padding from altering line height.
+--------------------------------------------------------------------------- */
+.reveal-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+/* One-shot light sweep across accent words: a brightness pulse per glyph,
+   fired on a staggered inline animation-delay so the highlight travels.
+
+   This deliberately avoids the usual `background-clip: text` gradient trick.
+   That technique needs `-webkit-text-fill-color: transparent`, which inherits
+   down to the glyphs, while the clip itself cannot reach through the
+   `.reveal-mask` spans above — they are `overflow: hidden` inline-blocks, which
+   break the text clip. The result was an accent word that rendered completely
+   invisible. A filter pulse has no such failure mode: at rest it is exactly
+   brightness(1), so the glyph is simply its own colour. */
+/* No fill-mode on purpose. `both` would retain the final keyframe's `filter`
+   forever, and a filter that is not `none` pins a composited layer per glyph —
+   measured at 48.6fps with 18 dropped frames per 110 on the homepage, against
+   57.8 once the filters were released. Without a fill-mode the property
+   reverts to `none` when the animation ends, and the 0% keyframe is
+   brightness(1) anyway, so there is nothing to hold during the delay. */
+.reveal-shine {
+  animation: reveal-shine 0.62s ease-out;
+}
+
+@keyframes reveal-shine {
+  0% {
+    filter: brightness(1);
+  }
+  45% {
+    filter: brightness(1.85) drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-shine {
+    animation: none;
+  }
+}
+
+/* Fixed-size stacking layer. Both children share one grid cell so they can
+   cross-fade in place, and the negative margin does the centring — keeping
+   percentage terms out of the transform the rAF loop writes. */
+.cursor-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 72px;
+  height: 72px;
+  margin: -36px 0 0 -36px;
+  display: grid;
+  place-items: center;
+}
+
+.cursor-layer > * {
+  grid-area: 1 / 1;
+}
+
+/* Resting state. White with a soft purple halo rather than the brand gold:
+   gold sat on the gold button hover state and vanished into it. Scale and
+   opacity only — both compositor properties, so the morph costs no layout. */
+.cursor-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: var(--color-paper);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.35),
+    0 0 14px rgba(139, 92, 246, 0.6);
+  transform: scale(1);
+  opacity: 1;
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s ease-out;
+}
+
+/* Interactive state: the mascot. Overshoots very slightly on the way in so
+   it lands with a bit of character instead of simply appearing. */
+.cursor-monkey {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  transform: scale(0.2) rotate(-40deg);
+  opacity: 0;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.55));
+  transition:
+    transform 0.5s cubic-bezier(0.34, 1.4, 0.64, 1),
+    opacity 0.28s ease-out;
+}
+
+[data-grown] .cursor-dot {
+  transform: scale(0);
+  opacity: 0;
+}
+
+[data-grown] .cursor-monkey {
+  transform: scale(1) rotate(0deg);
+  opacity: 1;
 }
 
 * {

@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
 import PageFade from '../components/PageFade';
 import SubtleReveal from '../components/SubtleReveal';
 import MonkeyMascot from '../components/MonkeyMascot';
+import CTAButton from '../components/CTAButton';
 
 export default function Pricing() {
   return (
@@ -10,7 +10,7 @@ export default function Pricing() {
       <SubtleReveal
         as="h1"
         delay={0.06}
-        className="mt-8 text-4xl font-black uppercase tracking-tight text-paper md:text-6xl"
+        className="mt-8 text-4xl font-display font-extrabold uppercase tracking-tight text-paper md:text-6xl"
       >
         Let's Talk <span className="text-purple">Numbers</span>
       </SubtleReveal>
@@ -19,12 +19,9 @@ export default function Pricing() {
         discovery call and we'll figure out exactly what you need: no fluff, no fixed
         packages, just a real conversation.
       </SubtleReveal>
-      <Link
-        to="/contact"
-        className="mt-10 rounded-full bg-purple px-10 py-4 text-sm font-bold uppercase tracking-wide text-paper transition-transform hover:scale-105 hover:bg-gold hover:text-ink"
-      >
+      <CTAButton to="/contact" size="lg" className="mt-10">
         Book a Discovery Call
-      </Link>
+      </CTAButton>
     </PageFade>
   );
 }

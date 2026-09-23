@@ -48,7 +48,7 @@ export default function About() {
           <SubtleReveal
             as="h1"
             delay={0.06}
-            className="mt-4 text-4xl font-black uppercase tracking-tight text-paper md:text-6xl"
+            className="mt-4 text-4xl font-display font-extrabold uppercase tracking-tight text-paper md:text-6xl"
           >
             The monkeys behind the <span className="text-gold">madness.</span>
           </SubtleReveal>
@@ -94,7 +94,7 @@ export default function About() {
             <span className="text-xs font-bold uppercase tracking-widest text-purple">
               What We Stand For
             </span>
-            <h2 className="mt-4 text-3xl font-black uppercase tracking-tight text-paper md:text-5xl">
+            <h2 className="mt-4 text-3xl font-display font-extrabold uppercase tracking-tight text-paper md:text-5xl">
               Our <span className="text-gold">values.</span>
             </h2>
           </Reveal>
@@ -117,7 +117,7 @@ export default function About() {
             <span className="text-xs font-bold uppercase tracking-widest text-purple">
               Meet the Troop
             </span>
-            <h2 className="mt-4 text-3xl font-black uppercase tracking-tight text-paper md:text-5xl">
+            <h2 className="mt-4 text-3xl font-display font-extrabold uppercase tracking-tight text-paper md:text-5xl">
               The <span className="text-gold">team.</span>
             </h2>
             <p className="mt-4 text-paper/60">

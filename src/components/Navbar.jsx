@@ -1,8 +1,24 @@
 import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import { NavLink, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import CTAButton from './CTAButton';
 import logoMark from '../assets/logo-mark.png';
 import logoMarkWebp from '../assets/logo-mark.webp';
+
+// The takeover wipes open from the burger, which sits top-right.
+const CLOSED = 'circle(0% at 88% 4%)';
+const OPEN = 'circle(150% at 88% 4%)';
+
+// Links land after the wipe has cleared enough of the screen to reveal them.
+const LIST = {
+  hidden: {},
+  visible: { transition: { delayChildren: 0.18, staggerChildren: 0.06 } },
+};
+
+const ITEM = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] } },
+};
 
 const LINKS = [
   { to: '/', label: 'Home' },
@@ -14,6 +30,8 @@ const LINKS = [
 ];
 
 export default function Navbar() {
+  const { pathname } = useLocation();
+  const reduceMotion = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -23,10 +41,24 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Close the takeover whenever the route changes, so tapping a link doesn't
+  // leave the overlay sitting over the new page.
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
+    if (!menuOpen) return undefined;
+
+    const onKey = (e) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+
     return () => {
       document.body.style.overflow = '';
+      window.removeEventListener('keydown', onKey);
     };
   }, [menuOpen]);
 
@@ -74,19 +106,18 @@ export default function Navbar() {
               )}
             </NavLink>
           ))}
-          <NavLink
-            to="/pricing"
-            className="rounded-full bg-purple px-5 py-2 text-sm font-bold uppercase tracking-wide text-paper transition-transform hover:scale-105 hover:bg-gold hover:text-ink"
-          >
+          <CTAButton to="/pricing" size="sm">
             Book a Call
-          </NavLink>
+          </CTAButton>
         </div>
 
         <button
           type="button"
-          aria-label="Toggle menu"
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
           onClick={() => setMenuOpen((v) => !v)}
-          className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
+          className="relative z-[70] flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
         >
           <motion.span
             animate={menuOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
@@ -106,35 +137,52 @@ export default function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden bg-ink md:hidden"
+            id="mobile-menu"
+            initial={reduceMotion ? { opacity: 0 } : { clipPath: CLOSED }}
+            animate={reduceMotion ? { opacity: 1 } : { clipPath: OPEN }}
+            exit={reduceMotion ? { opacity: 0 } : { clipPath: CLOSED }}
+            transition={
+              reduceMotion
+                ? { duration: 0.15 }
+                : { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
+            }
+            className="fixed inset-0 z-[65] bg-[linear-gradient(160deg,#150f22,#0d0d0d_60%)] md:hidden"
           >
-            <div className="flex flex-col gap-1 px-6 pb-6">
-              {LINKS.map((link) => (
-                <NavLink
-                  key={link.to}
-                  to={link.to}
-                  end={link.to === '/'}
-                  onClick={() => setMenuOpen(false)}
-                  className={({ isActive }) =>
-                    `py-3 text-lg font-bold uppercase tracking-wide border-b border-white/10 ${
-                      isActive ? 'text-purple' : 'text-paper'
-                    }`
-                  }
-                >
-                  {link.label}
-                </NavLink>
+            <motion.nav
+              variants={LIST}
+              initial="hidden"
+              animate="visible"
+              className="flex h-full flex-col justify-center gap-1 px-7"
+            >
+              {LINKS.map((link, i) => (
+                <motion.div key={link.to} variants={ITEM}>
+                  <NavLink
+                    to={link.to}
+                    end={link.to === '/'}
+                    onClick={() => setMenuOpen(false)}
+                    className={({ isActive }) =>
+                      // Fluid rather than a flat text-4xl: in Syne at 36px,
+                      // "PORTFOLIO" ran 46px past the gutter on a 390px phone,
+                      // and Services/Contact cleared it by under 7px.
+                      `flex items-baseline gap-3 py-2 text-[clamp(1.6rem,7.5vw,2.25rem)] font-display font-extrabold uppercase tracking-tight ${
+                        isActive ? 'text-gold' : 'text-paper'
+                      }`
+                    }
+                  >
+                    <span className="font-sans text-xs font-bold tracking-widest text-purple">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    {link.label}
+                  </NavLink>
+                </motion.div>
               ))}
-              <NavLink
-                to="/pricing"
-                onClick={() => setMenuOpen(false)}
-                className="mt-4 rounded-full bg-purple px-5 py-3 text-center text-sm font-bold uppercase tracking-wide text-paper"
-              >
-                Book a Call
-              </NavLink>
-            </div>
+
+              <motion.div variants={ITEM} className="mt-8">
+                <CTAButton to="/pricing" onClick={() => setMenuOpen(false)} size="lg">
+                  Book a Call
+                </CTAButton>
+              </motion.div>
+            </motion.nav>
           </motion.div>
         )}
       </AnimatePresence>

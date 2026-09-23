@@ -1,6 +1,13 @@
 import { useRef, useEffect } from 'react';
-import { gsap, ScrollTrigger } from '../lib/gsap';
+import { gsap } from '../lib/gsap';
 
+/**
+ * Counts a numeric string ("98%", "7+") up from zero when it scrolls into view.
+ *
+ * Under reduced motion the final value is written straight to the element:
+ * a number ticking upward is exactly the kind of movement the setting asks us
+ * to drop, and the figure itself is the content.
+ */
 export default function CountUp({
   value,
   as: Tag = 'span',
@@ -24,26 +31,28 @@ export default function CountUp({
     const decimals = (numberStr.split('.')[1] || '').length;
     const counter = { value: 0 };
 
-    el.textContent = `${prefix}${(0).toFixed(decimals)}${suffix}`;
+    const mm = gsap.matchMedia();
 
-    const ctx = gsap.context(() => {
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      el.textContent = `${prefix}${(0).toFixed(decimals)}${suffix}`;
+
       gsap.to(counter, {
         value: target,
         duration,
         ease: 'power3.out',
         overwrite: true,
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 85%',
-          once: true,
-        },
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
         onUpdate: () => {
           el.textContent = `${prefix}${counter.value.toFixed(decimals)}${suffix}`;
         },
       });
-    }, ref);
+    });
 
-    return () => ctx.revert();
+    mm.add('(prefers-reduced-motion: reduce)', () => {
+      el.textContent = value;
+    });
+
+    return () => mm.revert();
   }, [value, duration]);
 
   return (

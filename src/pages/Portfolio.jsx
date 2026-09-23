@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import PageFade from '../components/PageFade';
 import SubtleReveal from '../components/SubtleReveal';
 import Reveal from '../components/Reveal';
 import BananaRain from '../components/BananaRain';
+import CTAButton from '../components/CTAButton';
 import { clients } from '../data/clients';
 
 const ENTRY_RAIN_DURATION = 2200;
+
+// Ceiling on the per-tile entrance delay. Uncapped, i * 0.06 across 12 clients
+// left the last tile waiting 0.66s after its own scroll trigger — a pleasant
+// ripple on a four-across desktop grid, but plain lag once mobile collapses it
+// to one column and each tile triggers on its own.
+const STAGGER_CAP = 0.24;
 const MOBILE_BANANA_COUNT = 14;
 const DESKTOP_BANANA_COUNT = 26;
 
@@ -45,7 +51,7 @@ export default function Portfolio() {
         <SubtleReveal
           as="h1"
           delay={0.06}
-          className="mt-4 text-4xl font-black uppercase tracking-tight text-paper md:text-6xl"
+          className="mt-4 text-4xl font-display font-extrabold uppercase tracking-tight text-paper md:text-6xl"
         >
           Brands we've gone <span className="text-gold">bananas</span> for.
         </SubtleReveal>
@@ -56,7 +62,7 @@ export default function Portfolio() {
 
       <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {clients.map((client, i) => (
-          <Reveal key={client.name} delay={i * 0.06} y={30}>
+          <Reveal key={client.name} delay={Math.min(i * 0.06, STAGGER_CAP)} y={30}>
             <motion.div
               whileHover={{ y: -6 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
@@ -88,12 +94,7 @@ export default function Portfolio() {
         <p className="max-w-md text-paper/50">
           Want to see your brand on this wall? Let's talk about what we can build together.
         </p>
-        <Link
-          to="/contact"
-          className="rounded-full bg-purple px-8 py-4 text-sm font-bold uppercase tracking-wide text-paper transition-transform hover:scale-105 hover:bg-gold hover:text-ink"
-        >
-          Start a Project
-        </Link>
+        <CTAButton to="/contact">Start a Project</CTAButton>
       </Reveal>
     </PageFade>
   );

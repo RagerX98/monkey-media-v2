@@ -1,10 +1,10 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import MonkeyMascot from '../MonkeyMascot';
 import MarqueeStrip from '../MarqueeStrip';
 import RevealWords from '../RevealWords';
 import AmbientSmoke from '../AmbientSmoke';
+import CTAButton from '../CTAButton';
 
 export default function Hero() {
   const sectionRef = useRef(null);
@@ -39,13 +39,19 @@ export default function Hero() {
             Creative agency for brands with guts
           </motion.div>
 
+          {/* Two notes on the props below:
+              - No `stagger`: it is now per character rather than per word, and
+                RevealWords' own default is tuned for that. The previous 0.09
+                stretched this 16-glyph headline across 1.4s.
+              - The fluid size below `sm`: Syne is appreciably wider than
+                Montserrat, and at a flat text-6xl "MONKEY" measured 449px
+                against the 342px available on a 390px phone. */}
           <RevealWords
             text="Pure Monkey Energy"
             accentWords={['Energy']}
             accentClassName="text-gold"
             delay={0.15}
-            stagger={0.09}
-            className="text-6xl font-black uppercase leading-[0.95] tracking-tight text-paper sm:text-7xl lg:text-8xl"
+            className="text-[clamp(2.4rem,10.5vw,3.75rem)] font-display font-extrabold uppercase leading-[0.95] tracking-tight text-paper sm:text-7xl lg:text-8xl"
           />
 
           <motion.p
@@ -65,18 +71,10 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.85 }}
             className="mt-10 flex flex-wrap gap-4"
           >
-            <Link
-              to="/contact"
-              className="rounded-full bg-purple px-8 py-4 text-sm font-bold uppercase tracking-wide text-paper transition-transform hover:scale-105 hover:bg-gold hover:text-ink"
-            >
-              Start a Project
-            </Link>
-            <Link
-              to="/portfolio"
-              className="rounded-full border border-white/25 px-8 py-4 text-sm font-bold uppercase tracking-wide text-paper transition-colors hover:border-paper"
-            >
+            <CTAButton to="/contact">Start a Project</CTAButton>
+            <CTAButton to="/portfolio" variant="ghost">
               See Our Work
-            </Link>
+            </CTAButton>
           </motion.div>
         </div>
 
