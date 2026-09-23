@@ -14,7 +14,13 @@ export default function Services() {
         Eight ways we help brands go bananas (the good kind).
       </SubtleReveal>
 
-      <div className="mt-16 grid gap-6 md:grid-cols-2">
+      {/* ServiceCard enters from x: ±70, so a card still waiting on its scroll
+          trigger sits 70px outside the container and makes the whole page
+          scrollable sideways (~46px). The homepage teaser never showed this
+          because its <section> carries `overflow-hidden`; this page has no such
+          ancestor. `overflow-x-clip` rather than `overflow-hidden` so the
+          vertical hover lift and its shadow are not clipped too. */}
+      <div className="mt-16 grid gap-6 overflow-x-clip md:grid-cols-2">
         {services.map((s, i) => (
           <ServiceCard key={s.number} service={s} index={i} />
         ))}
