@@ -3,7 +3,9 @@
 Newest first. Each entry ties to a commit hash where one exists. See
 logbook/README.md for how to add to this.
 
-## 2026-09-23 — motion & cosmetics pass
+## 2026-09-23 — `fa73def`
+
+**Motion & cosmetics pass**
 
 **Nine changes from a site-wide motion audit, plus one performance
 root-cause that turned out to matter more than any of them.**
