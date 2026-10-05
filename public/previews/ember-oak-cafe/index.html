@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Monkey Media">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ember &amp; Oak — Specialty Coffee &amp; Kitchen</title>
+<meta name="description" content="Ember &amp; Oak is a specialty coffee roaster and all-day kitchen. Demo preview site.">
+<meta name="theme-color" content="#f3ece0">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+html{overflow-x:clip}body{overflow-x:clip}
+:root{--bg:#f3ece0;--bg2:#e9dfce;--ink:#2a1810;--mute:#7a6558;--line:rgba(42,24,16,.16);--terra:#c4552d;--sage:#8a9a6b;--dark:#1d110b;--cream:#f3ece0;--gut:clamp(18px,5vw,70px)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.disp{font-family:Fraunces,Georgia,serif;font-weight:400;letter-spacing:-.025em;line-height:1.02;font-variation-settings:"opsz" 144}
+em,.it{font-style:italic;color:var(--terra)}
+a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
+.wrap{max-width:1280px;margin:0 auto;padding:0 var(--gut)}
+.split .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.14em;margin-bottom:-.14em}.split .w>span{display:inline-block}
+.pre{position:fixed;inset:0;z-index:100;background:var(--dark);color:var(--cream);display:grid;place-items:center;text-align:center}
+.pre .disp{font-size:clamp(2.6rem,9vw,5.4rem);font-style:italic}.pre .disp span{color:#e08a5f}
+.pre .bar{width:120px;height:1px;background:rgba(255,255,255,.2);margin:22px auto 0}.pre .bar b{display:block;height:100%;width:0;background:#e08a5f}
+.prog{position:fixed;left:0;top:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--terra);z-index:60}
+.cursor{position:fixed;left:0;top:0;z-index:70;width:12px;height:12px;border-radius:50%;background:var(--terra);pointer-events:none;opacity:0;display:grid;place-items:center;transition:width .35s,height .35s}
+.cursor span{font:700 .68rem 'DM Sans';color:#fff;letter-spacing:.1em;opacity:0}.cursor.big{width:88px;height:88px}.cursor.big span{opacity:1}
+@media (hover:none){.cursor{display:none}}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:20px var(--gut);transition:background .4s,backdrop-filter .4s}
+nav.solid{background:rgba(243,236,224,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.logo{font-family:Fraunces;font-size:1.7rem;font-style:italic;letter-spacing:-.03em}.logo b{font-style:normal;color:var(--terra)}
+.links{display:flex;gap:2.4rem;font-size:.92rem;font-weight:500}.links a{position:relative}.links a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:right;transition:transform .4s}.links a:hover::after{transform:scaleX(1);transform-origin:left}
+.btn{display:inline-flex;align-items:center;gap:.7rem;padding:.95rem 1.7rem;border-radius:99px;background:var(--ink);color:var(--cream);font-weight:500;font-size:.92rem;border:1px solid var(--ink);cursor:pointer;transition:background .3s,color .3s}
+.btn:hover{background:var(--terra);border-color:var(--terra)}.btn.ghost{background:transparent;color:var(--ink)}.btn.ghost:hover{background:var(--ink);color:var(--cream)}.btn.sm{padding:.65rem 1.2rem;font-size:.85rem}
+.burger{display:none;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(243,236,224,.7);position:relative;cursor:pointer}
+.burger i{position:absolute;left:13px;right:13px;height:1.5px;background:var(--ink);transition:.3s}.burger i:first-child{top:18px}.burger i:last-child{top:26px}
+.burger.on i:first-child{top:22px;transform:rotate(45deg)}.burger.on i:last-child{top:22px;transform:rotate(-45deg)}
+.sheet{position:fixed;inset:0;z-index:45;background:var(--dark);color:var(--cream);display:flex;flex-direction:column;justify-content:center;gap:.6rem;padding:var(--gut);clip-path:ellipse(0 0 at 100% 0);transition:clip-path .8s cubic-bezier(.7,0,.2,1);pointer-events:none}
+.sheet.on{clip-path:ellipse(160% 160% at 100% 0);pointer-events:auto}.sheet a{font-family:Fraunces;font-size:clamp(2.6rem,12vw,4rem);font-style:italic}
+
+/* hero */
+.hero{position:relative;min-height:100svh;padding:130px 0 70px;display:flex;align-items:center;overflow:hidden}
+.hgrid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,5vw,80px);align-items:center;width:100%}
+.hero h1{font-size:clamp(3.2rem,8.4vw,8rem);margin:1.2rem 0 1.6rem;font-weight:350}
+.hero .lead{font-size:clamp(1.02rem,1.6vw,1.2rem);color:var(--mute);max-width:29rem;margin-bottom:2rem}
+.pill{display:inline-flex;align-items:center;gap:.6rem;font-size:.8rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--terra)}.pill::before{content:"";width:30px;height:1px;background:var(--terra)}
+.cta-row{display:flex;gap:.8rem;flex-wrap:wrap}
+.arch{position:relative;justify-self:end;width:min(100%,440px)}
+.arch .shape{aspect-ratio:3/4.1;border-radius:999px 999px 28px 28px;overflow:hidden;background:var(--bg2);position:relative}
+.arch .shape img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.badge{position:absolute;left:-54px;bottom:12%;width:130px;height:130px;border-radius:50%;background:var(--terra);color:var(--cream);display:grid;place-items:center;z-index:3;box-shadow:0 18px 40px -12px rgba(196,85,45,.6)}
+.badge svg{position:absolute;inset:0;width:100%;height:100%;animation:rot 18s linear infinite}.badge text{font:700 10.4px 'DM Sans';letter-spacing:.2em;fill:var(--cream)}
+.badge b{font-family:Fraunces;font-size:2.4rem;font-style:italic}
+@keyframes rot{to{transform:rotate(360deg)}}
+.steam{position:absolute;top:-30px;right:20%;display:flex;gap:10px;z-index:2}.steam i{width:3px;height:60px;border-radius:3px;background:linear-gradient(transparent,rgba(42,24,16,.25),transparent);animation:steam 3s ease-in-out infinite}.steam i:nth-child(2){animation-delay:.5s;height:80px}.steam i:nth-child(3){animation-delay:1s}
+@keyframes steam{0%{transform:translateY(20px) scaleY(.6);opacity:0}50%{opacity:1}100%{transform:translateY(-30px) scaleY(1.1);opacity:0}}
+
+.marq{border-block:1px solid var(--line);padding:1.1rem 0;overflow:hidden;background:var(--bg2)}
+.marq .track{display:flex;width:max-content;white-space:nowrap}
+.marq span{font-family:Fraunces;font-style:italic;font-size:clamp(1.5rem,3.4vw,2.6rem);padding-right:2.6rem;display:flex;align-items:center;gap:2.6rem}.marq span::after{content:"✺";color:var(--terra);font-style:normal;font-size:.7em}
+
+section{position:relative;z-index:2}.sec{padding:clamp(80px,12vw,170px) 0}
+.statement{font-family:Fraunces;font-size:clamp(1.9rem,4.8vw,4.2rem);line-height:1.12;letter-spacing:-.03em;max-width:24ch;font-weight:350}
+.story{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,6vw,100px);align-items:center;margin-top:clamp(50px,8vw,110px)}
+.imgs{position:relative;aspect-ratio:1/1.1}
+.imgs .a,.imgs .b{position:absolute;overflow:hidden;border-radius:24px;background:var(--bg2)}
+.imgs .a{left:0;top:0;width:68%;aspect-ratio:3/4}.imgs .b{right:0;bottom:0;width:56%;aspect-ratio:1;border:8px solid var(--bg)}
+.imgs img{width:100%;height:100%;object-fit:cover}
+.story h3{font-size:clamp(2rem,4vw,3.2rem);margin-bottom:1.2rem}.story p{color:var(--mute);margin-bottom:1rem;max-width:30rem}
+.sign{font-family:Fraunces;font-style:italic;font-size:1.5rem;color:var(--terra);margin-top:1.4rem}
+
+/* menu */
+.menusec{background:var(--dark);color:var(--cream);position:relative}
+.menusec .head{display:flex;justify-content:space-between;align-items:flex-end;gap:1.5rem;flex-wrap:wrap;margin-bottom:clamp(30px,5vw,60px)}
+.menusec h2{font-size:clamp(2.6rem,7vw,6rem)}.menusec em{color:#e08a5f}
+.tabs{display:flex;gap:.4rem;background:rgba(255,255,255,.07);padding:.35rem;border-radius:99px}
+.tab{border:0;background:transparent;color:var(--cream);font:500 .88rem 'DM Sans';padding:.65rem 1.3rem;border-radius:99px;cursor:pointer;transition:.3s}.tab.on{background:var(--cream);color:var(--dark)}
+.mlist{border-top:1px solid rgba(255,255,255,.16)}
+.mi{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:baseline;padding:clamp(18px,2.6vw,30px) 0;transition:padding .45s cubic-bezier(.2,.7,.2,1),color .3s;cursor:default}
+.mi:hover{padding-left:20px;color:#e08a5f}
+.mi h3{font-size:clamp(1.6rem,3.6vw,3rem)}.mi p{font-size:.92rem;color:rgba(243,236,224,.55);margin-top:.3rem;max-width:34rem}.mi .pr{font-family:Fraunces;font-size:clamp(1.3rem,2.4vw,2rem);font-style:italic}
+.mi .th{display:none;width:64px;height:64px;border-radius:14px;object-fit:cover;margin-right:14px}
+.float-img{position:fixed;left:0;top:0;width:260px;height:330px;border-radius:20px;overflow:hidden;pointer-events:none;z-index:40;opacity:0;transform:scale(.8);background:#333;background-size:cover;background-position:center;box-shadow:0 30px 60px -20px #000}
+
+/* beans */
+.beans{position:relative;height:clamp(460px,92vh,820px);overflow:hidden;display:grid;place-items:center;color:var(--cream);text-align:center}
+.beans img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.beans::after{content:"";position:absolute;inset:0;background:rgba(29,17,11,.58)}
+.beans .in{position:relative;z-index:2;padding:0 var(--gut);max-width:900px}.beans h2{font-size:clamp(2.8rem,8vw,7rem)}.beans em{color:#e08a5f}.beans p{margin-top:1.2rem;color:#e4d6c4;font-size:1.1rem}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,3vw,40px);margin-top:clamp(30px,5vw,60px)}.facts div{border-top:1px solid rgba(255,255,255,.4);padding-top:1rem}.facts b{display:block;font-family:Fraunces;font-size:clamp(2rem,4vw,3.2rem);font-weight:400}.facts div>span{font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;color:#d9c8b3}
+
+/* visit */
+.visit{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(24px,6vw,90px);align-items:start}
+.visit h2{font-size:clamp(2.6rem,6.4vw,5.4rem);margin:1rem 0 1.6rem}
+.info{display:grid;gap:1.6rem;margin-top:2rem}.info div{border-top:1px solid var(--line);padding-top:1rem}.info small{display:block;font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-bottom:.3rem}.info b{font-family:Fraunces;font-weight:400;font-size:1.4rem;line-height:1.3}
+.gal{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gal a{overflow:hidden;border-radius:22px;aspect-ratio:1;background:var(--bg2);position:relative}.gal a:nth-child(1){aspect-ratio:.82}.gal a:nth-child(4){aspect-ratio:.82}
+.gal a:nth-child(odd){margin-top:0}.gal a:nth-child(even){margin-top:30px}
+.gal img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}.gal a:hover img{transform:scale(1.08)}
+.news{margin:0 var(--gut) clamp(50px,8vw,100px);border-radius:36px;background:var(--terra);color:var(--cream);text-align:center;padding:clamp(56px,10vw,130px) var(--gut);position:relative;overflow:hidden}
+.news h2{font-size:clamp(2.6rem,7vw,6rem);max-width:14ch;margin:0 auto 1.4rem}.news em{color:var(--dark)}.news p{opacity:.9;margin-bottom:1.8rem}
+.news form{display:flex;max-width:470px;margin:0 auto;background:var(--cream);border-radius:99px;padding:.4rem}.news input{flex:1;min-width:0;border:0;background:transparent;padding:.8rem 1.2rem;font:500 1rem 'DM Sans';color:var(--ink);outline:none}.news .btn{background:var(--dark);border-color:var(--dark)}
+.deco{position:absolute;font-family:Fraunces;font-style:italic;font-size:clamp(10rem,30vw,26rem);opacity:.07;line-height:.8;pointer-events:none;user-select:none}
+footer{padding:0 0 60px;color:var(--mute);font-size:.88rem}footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}footer a{color:var(--ink);border-bottom:1px solid var(--line)}
+/* motion: cup-fill loader, ink-settling text, circle blooms, slow drift */
+.pre__in{display:grid;justify-items:center;gap:6px}
+.cup{width:clamp(110px,28vw,150px);overflow:visible}
+.cup__line{fill:none;stroke:#e08a5f;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.cup__fill{fill:#e08a5f}
+.cup__steam{fill:none;stroke:rgba(243,236,224,.55);stroke-width:2.4;stroke-linecap:round;opacity:0;stroke-dasharray:60;stroke-dashoffset:60}
+.pre__sub{margin:.2rem 0 0;font:500 .78rem 'DM Sans';letter-spacing:.24em;text-transform:uppercase;color:rgba(243,236,224,.55)}
+.mi{border-bottom:0!important;position:relative}
+.mi::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:rgba(255,255,255,.16);transform-origin:left;transform:scaleX(var(--ln,1))}
+.beanfx{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.beanfx i{position:absolute;width:16px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7a4a30,#3b2014 70%);opacity:.55;box-shadow:0 6px 10px -4px rgba(42,24,16,.4)}
+.beanfx i::after{content:"";position:absolute;left:46%;top:12%;bottom:12%;width:2px;border-radius:2px;background:rgba(243,236,224,.35);transform:rotate(14deg)}
+.js [data-hero]{opacity:0}
+
+@media (max-width:900px){
+  .links,nav .btn{display:none}.burger{display:block}
+  .hgrid,.story,.visit{grid-template-columns:1fr}.arch{justify-self:center;width:min(86%,380px);margin-top:20px}.badge{left:-14px;width:108px;height:108px}
+  .imgs{max-width:460px}.facts{grid-template-columns:1fr 1fr 1fr}
+  .tabs{width:100%;overflow-x:auto}.tab{flex:1;white-space:nowrap}
+  .mi{grid-template-columns:auto 1fr auto;align-items:center}.mi .th{display:block}.mi:hover{padding-left:0}
+  .gal a:nth-child(even){margin-top:18px}
+  .float-img{display:none}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.js [data-hero]{opacity:1}}
+</style>
+</head>
+<body>
+<div class="pre"><div class="pre__in"><svg class="cup" viewBox="0 0 130 120" aria-hidden="true"><defs><clipPath id="cupclip"><path d="M18 34h74v34a31 31 0 0 1-31 31H49a31 31 0 0 1-31-31z"/></clipPath></defs><g clip-path="url(#cupclip)"><rect class="cup__fill" x="10" y="108" width="100" height="90"/></g><path class="cup__line" d="M18 34h74v34a31 31 0 0 1-31 31H49a31 31 0 0 1-31-31z M92 44h8a13 13 0 0 1 0 26h-8"/><path class="cup__steam" d="M42 24c-6-6 6-10 0-18M56 24c-6-6 6-10 0-18M70 24c-6-6 6-10 0-18"/></svg><div class="disp">Ember <span>&amp;</span> Oak</div><p class="pre__sub">Brewing your morning&hellip;</p></div></div>
+<div class="prog"></div><div class="cursor"><span></span></div><div class="float-img" id="fimg"></div>
+<nav id="nav"><a href="#" class="logo">Ember <b>&amp;</b> Oak</a><div class="links"><a href="#story">Our story</a><a href="#menu">Menu</a><a href="#origins">Origins</a><a href="#visit">Visit</a></div><a href="#visit" class="btn sm" data-mag>Reserve a table</a><button class="burger" aria-label="Menu"><i></i><i></i></button></nav>
+<div class="sheet"><a href="#story">Our story</a><a href="#menu">Menu</a><a href="#origins">Origins</a><a href="#visit">Visit</a></div>
+
+<header class="hero">
+  <div class="wrap hgrid">
+    <div>
+      <span class="pill" data-hero>Specialty roasters · Est. 2014</span>
+      <h1 data-split="load">Slow mornings, <em>honest</em> coffee.</h1>
+      <p class="lead" data-hero>Small-batch beans roasted every Tuesday, a kitchen that bakes before sunrise, and a corner table that's always waiting for you.</p>
+      <div class="cta-row" data-hero><a href="#menu" class="btn" data-mag>See the menu →</a><a href="#visit" class="btn ghost" data-mag>Find us</a></div>
+    </div>
+    <div class="arch" data-hero>
+      <div class="steam"><i></i><i></i><i></i></div>
+      <div class="badge"><svg viewBox="0 0 130 130"><defs><path id="c" d="M65 65m-48 0a48 48 0 1 1 96 0a48 48 0 1 1-96 0"/></defs><text><textPath href="#c">FRESHLY ROASTED · SMALL BATCH · </textPath></text></svg><b>EO</b></div>
+      <div class="shape" data-clip><img data-img="hero" data-eager data-parallax=".08" alt="Pour-over coffee being made"></div>
+    </div>
+  </div>
+</header>
+
+<div class="marq"><div class="track" data-marq><span>Single origin</span><span>Small batch</span><span>Baked daily</span><span>Slow brew</span><span>Oat &amp; whole milk</span></div></div>
+
+<section class="sec" id="story"><div class="wrap">
+  <p class="statement" data-scrub>We believe a good cup is worth waiting for. So we roast in small batches, bake before dawn, and never rush the pour.</p>
+  <div class="story">
+    <div class="imgs"><div class="a" data-clip><img data-img="story1" data-parallax=".08" alt="Latte art"></div><div class="b" data-clip><img data-img="story2" data-parallax=".1" alt="Inside the café"></div></div>
+    <div><h3 data-split>From farm gate to <em>your cup</em></h3><p data-r>We buy directly from growers we've visited — paying well above fair-trade minimums — then roast right here, in the back of the café, every Tuesday.</p><p data-r>The kitchen follows the same rule: seasonal produce, slow ferments and butter, lots of butter. Come hungry.</p><div class="sign" data-r>— Maya &amp; Tom, founders</div></div>
+  </div>
+</div></section>
+
+<section class="sec menusec" id="menu"><div class="wrap">
+  <div class="head"><h2 data-split>The <em>menu</em></h2><div class="tabs" id="tabs"></div></div>
+  <div class="mlist" id="mlist"></div>
+</div></section>
+
+<section class="beans" id="origins"><img data-img="beans" data-parallax=".15" alt=""><div class="in"><h2 data-split>From Huila to <em>your hands</em></h2><p data-r>Every bag tells you the farm, the altitude and the harvest date — because you deserve to know.</p>
+  <div class="facts" data-stagger><div><b><span data-count="1750">0</span>m</b><span>Avg. altitude</span></div><div><b><span data-count="12">0</span></b><span>Partner farms</span></div><div><b><span data-count="48">0</span>h</b><span>Roast to shelf</span></div></div></div></section>
+
+<section class="sec" id="visit"><div class="wrap visit">
+  <div><span class="pill">Visit us</span><h2 data-split>Pull up <em>a chair</em></h2><p data-r style="color:var(--mute);max-width:28rem">Dogs, laptops and long conversations all welcome. Walk-ins are always fine — book ahead for weekend brunch.</p>
+    <div class="info" data-stagger><div><small>Address</small><b>14 Orchard Lane, Old Town</b></div><div><small>Hours</small><b>Mon–Fri 7:00–17:00<br>Sat–Sun 8:00–18:00</b></div><div><small>Say hello</small><b>hello@emberandoak.demo</b></div></div></div>
+  <div class="gal"><a href="#" data-cursor="LOOK"><img data-img="g1" alt=""></a><a href="#" data-cursor="LOOK"><img data-img="g2" alt=""></a><a href="#" data-cursor="LOOK"><img data-img="g3" alt=""></a><a href="#" data-cursor="LOOK"><img data-img="g4" alt=""></a></div>
+</div></section>
+
+<section class="news"><div class="deco" style="left:-2%;top:-6%">E&amp;O</div><h2 class="disp" data-split>Fresh beans, <em>first</em></h2><p data-r>Roast days, new origins and the odd free croissant — monthly, never spammy.</p>
+  <form onsubmit="event.preventDefault();this.querySelector('button').textContent='Thank you ☕'"><input type="email" placeholder="Your email" aria-label="Email"><button class="btn" type="submit">Subscribe</button></form></section>
+<footer><div class="wrap"><span>© 2026 Ember &amp; Oak. Fictional brand — demo preview.</span><span>Made by <a href="#">Monkey Media</a>. Do not copy.</span></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+/* ONE place to swap every image on this site.
+   Replace any URL with your own file, e.g. hero: "assets/hero.jpg" (generated or shot imagery).
+   Placeholders below are Unsplash photos. */
+var u = function (id, w) { return 'https://images.unsplash.com/photo-' + id + '?auto=format&fit=crop&q=75&w=' + (w || 1400); };
+window.IMG = {
+  hero:    u('1442512595331-e89e73853f31', 1400),   // pour-over, kettle
+  story1:  u('1509042239860-f550ce710b93', 1000),   // latte art
+  story2:  u('1517248135467-4c7edcad34c4', 1000),   // interior
+  beans:   u('1447933601403-0c6688de566e', 2000),   // beans, full-bleed
+  g1:      u('1495474472287-4d71bcdd2085', 900),
+  g2:      u('1509042239860-f550ce710b93', 900),
+  g3:      u('1517248135467-4c7edcad34c4', 900),
+  g4:      u('1442512595331-e89e73853f31', 900),
+  m1:      u('1495474472287-4d71bcdd2085', 700),    // menu hover previews
+  m2:      u('1509042239860-f550ce710b93', 700),
+  m3:      u('1442512595331-e89e73853f31', 700),
+  m4:      u('1447933601403-0c6688de566e', 700)
+};
+
+</script>
+<script>
+/* EMBER & OAK motion identity: cup fills -> ink-settling letters -> circle blooms -> slow drift */
+window.FX_CONFIG = (function () {
+  var fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+  return {
+    lenis: { duration: 1.7 },
+    count: { duration: 2.8, ease: 'sine.out' },
+
+    // the cup fills with coffee, steam curls up, everything fades to cream
+    preloader: function (pre, done) {
+      var fill = pre.querySelector('.cup__fill'), steam = pre.querySelector('.cup__steam');
+      var disp = pre.querySelector('.disp'), sub = pre.querySelector('.pre__sub');
+      gsap.set([disp, sub], { opacity: 0, y: 10 });
+      gsap.timeline()
+        .fromTo(fill, { attr: { y: 108 } }, { attr: { y: 36 }, duration: 1.9, ease: 'power1.inOut' })
+        .to(steam, { opacity: 1, strokeDashoffset: 0, duration: 1.1, ease: 'sine.out' }, '-=.7')
+        .to([disp, sub], { opacity: 1, y: 0, duration: 1, stagger: .15, ease: 'sine.out' }, '-=1.1')
+        .call(done, null, '+=.35')
+        .to(pre, { opacity: 0, scale: 1.04, duration: 1.2, ease: 'sine.inOut', onComplete: function () { pre.remove(); } }, '<');
+    },
+
+    // letters settle into place like ink bleeding onto paper (no sliding)
+    split: function (el, ctx) {
+      var c = FX.chars(el);
+      gsap.set(c.chars, { opacity: 0 });
+      gsap.set(el, { y: 12, filter: fine ? 'blur(5px)' : 'blur(0px)' });
+      var play = function (tl, at) {
+        var t = tl || gsap;
+        t.to(c.chars, { opacity: 1, duration: 1.1, ease: 'sine.inOut', stagger: { amount: 1.15, from: 'random' } }, at);
+        t.to(el, { y: 0, filter: 'blur(0px)', duration: 1.6, ease: 'power2.out', clearProps: 'filter' }, at);
+      };
+      if (ctx.load) { ctx.queue(function (tl, i) { play(tl, .1 + i * .1); }); return; }
+      ScrollTrigger.create({ trigger: el, start: 'top 88%', once: true, onEnter: function () { play(null, 0); } });
+    },
+
+    // quote words clear up slowly, like steam leaving a window
+    scrub: function (el) {
+      var w = FX.words(el);
+      w.forEach(function (s) { s.parentNode.style.overflow = 'visible'; });
+      gsap.fromTo(w, { opacity: .12 }, { opacity: 1, stagger: .12, ease: 'none', scrollTrigger: { trigger: el, start: 'top 82%', end: 'bottom 45%', scrub: true } });
+    },
+
+    hero: function (els, tl) {
+      tl.fromTo(els, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 1.7, stagger: .22, ease: 'sine.out' }, .5);
+    },
+
+    reveal: function (el, kind) {
+      var st = { trigger: el, start: 'top 88%', once: true };
+      if (kind === 'clip') {
+        // photos bloom open from a circle
+        var im = el.querySelector('img,[data-img]');
+        gsap.set(el, { clipPath: 'circle(0% at 50% 58%)' });
+        var go = function (tl) {
+          var t = tl || gsap;
+          t.to(el, { clipPath: 'circle(80% at 50% 50%)', duration: 2.1, ease: 'power2.inOut' }, tl ? .6 : 0);
+          if (im) t.fromTo(im, { scale: 1.3 }, { scale: 1, duration: 2.6, ease: 'power2.out' }, tl ? .6 : 0);
+        };
+        if (el.closest('.hero')) FX.onIntro(function (tl) { go(tl); });
+        else ScrollTrigger.create({ trigger: el, start: 'top 88%', once: true, onEnter: function () { go(null); } });
+        return;
+      }
+      if (kind === 'stagger') {
+        gsap.fromTo(el.children, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1.5, stagger: .22, ease: 'power2.out', scrollTrigger: st });
+      } else {
+        gsap.fromTo(el, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1.6, ease: 'power2.out', scrollTrigger: st });
+      }
+    }
+  };
+})();
+</script>
+<script>
+/* fx.js — shared engine for the preview sites (smooth scroll, menu, images, counters, marquee,
+   pointer effects, preloader/intro plumbing). Each site gives itself a different personality by
+   defining window.FX_CONFIG BEFORE this file loads:
+     FX_CONFIG = {
+       lenis:     { duration: 1.6 },                       // smooth-scroll options
+       preloader: function (pre, done) { ... },            // custom loader; call done() when the intro should start
+       hero:      function (els, tl) { ... },              // entrance for [data-hero] elements
+       split:     function (el, ctx) { ... },              // replaces word-rise for [data-split]   (ctx.load, ctx.queue(fn))
+       scrub:     function (el) { ... },                   // replaces [data-scrub]
+       reveal:    function (el, kind) { ... },             // replaces [data-r] / [data-stagger] / [data-clip]  (kind: 'r'|'stagger'|'clip')
+       parallax:  false,                                   // disable default [data-parallax]
+       count:     { duration: 2, ease: 'power3.out' }
+     }
+   Attributes: data-img, data-hero, data-split[="load"], data-scrub, data-r, data-stagger, data-clip,
+   data-parallax, data-count, data-mag, data-tilt, data-marq[="right"], data-hscroll, data-cursor.
+   Hooks: FX.onIntro(fn(tl)) runs after the preloader. Helpers: FX.words(el), FX.chars(el), FX.velocity(). */
+(function () {
+  var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+  var CFG = window.FX_CONFIG || {};
+  var $ = function (s, c) { return [].slice.call((c || document).querySelectorAll(s)); };
+  var FX = window.FX = { reduce: reduce, fine: fine, $: $, cfg: CFG, lenis: null, hooks: [], onIntro: function (f) { this.hooks.push(f); }, velocity: function () { return 0; } };
+
+  /* ---------- images from config ---------- */
+  var st = document.createElement('style');
+  st.textContent = 'img[data-img].loaded{animation:fxin .9s ease backwards}@keyframes fxin{from{opacity:0}}';
+  document.head.appendChild(st);
+  if (window.IMG) {
+    $('[data-img]').forEach(function (el) {
+      var u = IMG[el.dataset.img]; if (!u) return;
+      if (el.tagName === 'IMG') {
+        el.decoding = 'async';
+        if (!el.hasAttribute('data-eager')) el.loading = 'lazy';
+        el.addEventListener('load', function () { el.classList.add('loaded'); FX.refresh && FX.refresh(); });
+        el.src = u;
+      } else { el.style.backgroundImage = 'url("' + u + '")'; }
+    });
+  }
+
+  var pre = $('.pre')[0];
+  if (!window.gsap) { // graceful fallback if CDN is blocked
+    if (pre) pre.remove();
+    $('[data-count]').forEach(function (e) { e.textContent = e.dataset.count; });
+    return;
+  }
+  document.documentElement.classList.add('js');
+  gsap.registerPlugin(ScrollTrigger);
+  var rt; FX.refresh = function () { clearTimeout(rt); rt = setTimeout(function () { ScrollTrigger.refresh(); }, 150); };
+
+  /* ---------- smooth scroll ---------- */
+  var vel = 0;
+  FX.velocity = function () { return vel; };
+  if (!reduce && window.Lenis) {
+    var lenis = FX.lenis = new Lenis(Object.assign({ duration: 1.15, smoothWheel: true }, CFG.lenis || {}));
+    lenis.on('scroll', function (e) { vel = e.velocity; ScrollTrigger.update(); });
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+  var burger = $('.burger')[0], sheet = $('.sheet')[0];
+  function closeMenu() {
+    if (!burger) return;
+    burger.classList.remove('on'); sheet && sheet.classList.remove('on');
+    FX.lenis && FX.lenis.start(); document.body.style.overflow = '';
+  }
+  if (burger && sheet) burger.addEventListener('click', function () {
+    var on = burger.classList.toggle('on'); sheet.classList.toggle('on', on);
+    if (on) { FX.lenis && FX.lenis.stop(); document.body.style.overflow = 'hidden'; } else closeMenu();
+  });
+  $('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var id = a.getAttribute('href'); if (id.length < 2) return;
+      var t = document.querySelector(id); if (!t) return; e.preventDefault(); closeMenu();
+      FX.lenis ? FX.lenis.scrollTo(t, { offset: -70 }) : t.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  /* ---------- progress bar ---------- */
+  if ($('.prog')[0]) gsap.to('.prog', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: .2 } });
+
+  /* ---------- text helpers ---------- */
+  function copyGradient(root, sel) {
+    $('.grad-text', root).forEach(function (g) {
+      var bg = getComputedStyle(g).backgroundImage;
+      $(sel, g).forEach(function (s) { s.style.backgroundImage = bg; s.style.webkitBackgroundClip = s.style.backgroundClip = 'text'; s.style.color = 'transparent'; });
+    });
+  }
+  // words: <span.w><span>word</span></span>  (outer clips, inner animates)
+  function words(el) {
+    if (el.__words) return el.__words;
+    (function walk(node) {
+      [].slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) {
+          var f = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(function (t) {
+            if (!t) return;
+            if (/^\s+$/.test(t)) { f.appendChild(document.createTextNode(' ')); return; }
+            var w = document.createElement('span'); w.className = 'w';
+            var i = document.createElement('span'); i.textContent = t; w.appendChild(i); f.appendChild(w);
+          });
+          node.replaceChild(f, n);
+        } else if (n.nodeType === 1 && n.tagName !== 'BR') walk(n);
+      });
+    })(el);
+    el.classList.add('split');
+    copyGradient(el, '.w>span');
+    return (el.__words = $('.w>span', el));
+  }
+  // chars: <span.cw><span.ch>c</span>…</span> per word (words never break across lines)
+  function chars(el, o) {
+    if (el.__chars) return el.__chars;
+    o = o || {}; var ws = [], cs = [];
+    (function walk(node) {
+      [].slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) {
+          var f = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(function (t) {
+            if (!t) return;
+            if (/^\s+$/.test(t)) { f.appendChild(document.createTextNode(' ')); return; }
+            var w = document.createElement('span'); w.className = 'cw'; w.style.display = 'inline-block'; w.style.whiteSpace = 'nowrap';
+            t.split('').forEach(function (c) {
+              var s = document.createElement('span'); s.className = 'ch'; s.textContent = c;
+              if (o.inlineBlock) s.style.display = 'inline-block';
+              w.appendChild(s); cs.push(s);
+            });
+            ws.push(w); f.appendChild(w);
+          });
+          node.replaceChild(f, n);
+        } else if (n.nodeType === 1 && n.tagName !== 'BR') walk(n);
+      });
+    })(el);
+    copyGradient(el, '.cw');
+    return (el.__chars = { words: ws, chars: cs });
+  }
+  FX.words = words; FX.chars = chars;
+
+  /* ---------- split text ---------- */
+  var loadQueue = [];
+  var custom = !reduce;
+  $('[data-split]').forEach(function (el) {
+    var isLoad = el.dataset.split === 'load';
+    if (custom && CFG.split) { CFG.split(el, { load: isLoad, queue: function (fn) { loadQueue.push(fn); }, fine: fine }); return; }
+    var w = words(el);
+    gsap.set(w, { yPercent: 115, rotate: reduce ? 0 : 4 });
+    if (reduce) { gsap.set(w, { yPercent: 0 }); return; }
+    if (isLoad) { loadQueue.push(function (tl, i) { tl.to(w, { yPercent: 0, rotate: 0, duration: 1.2, stagger: .07, ease: 'power4.out' }, .05 + i * .1); }); return; }
+    gsap.to(w, { yPercent: 0, rotate: 0, duration: 1.1, stagger: .06, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+  });
+  $('[data-scrub]').forEach(function (el) {
+    if (custom && CFG.scrub) { CFG.scrub(el); return; }
+    var w = words(el);
+    gsap.set(w, { yPercent: 0 }); w.forEach(function (x) { x.parentNode.style.overflow = 'visible'; });
+    if (reduce) return;
+    gsap.fromTo(w, { opacity: .14 }, { opacity: 1, stagger: .12, ease: 'none', scrollTrigger: { trigger: el, start: 'top 82%', end: 'bottom 45%', scrub: true } });
+  });
+
+  /* ---------- generic reveals ---------- */
+  $('[data-r]').forEach(function (el) {
+    if (custom && CFG.reveal) { CFG.reveal(el, 'r'); return; }
+    gsap.fromTo(el, { opacity: 0, y: reduce ? 0 : 44 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
+  });
+  $('[data-stagger]').forEach(function (el) {
+    if (custom && CFG.reveal) { CFG.reveal(el, 'stagger'); return; }
+    gsap.fromTo(el.children, { opacity: 0, y: reduce ? 0 : 50 }, { opacity: 1, y: 0, duration: .9, stagger: .1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+  });
+  $('[data-clip]').forEach(function (el) {
+    if (reduce) return;
+    if (CFG.reveal) { CFG.reveal(el, 'clip'); return; }
+    gsap.fromTo(el, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+    var im = el.querySelector('img,[data-img]');
+    if (im) gsap.from(im, { scale: 1.35, duration: 1.8, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+  });
+  $('[data-parallax]').forEach(function (el) {
+    if (reduce || CFG.parallax === false) return;
+    var v = parseFloat(el.dataset.parallax) || .15, host = el.parentNode;
+    gsap.set(el, { scale: 1 + v * 2 + .06 });
+    gsap.fromTo(el, { yPercent: -v * 100 }, { yPercent: v * 100, ease: 'none', scrollTrigger: { trigger: host, start: 'top bottom', end: 'bottom top', scrub: true } });
+  });
+
+  /* ---------- counters ---------- */
+  var cc = Object.assign({ duration: 2.2, ease: 'power3.out' }, CFG.count || {});
+  $('[data-count]').forEach(function (el) {
+    var end = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), o = { v: 0 };
+    ScrollTrigger.create({ trigger: el, start: 'top 92%', once: true, onEnter: function () {
+      gsap.to(o, { v: end, duration: reduce ? .01 : cc.duration, ease: cc.ease, onUpdate: function () { el.textContent = o.v.toLocaleString(undefined, { minimumFractionDigits: dec, maximumFractionDigits: dec }); } });
+    } });
+  });
+
+  /* ---------- marquee (speeds up with scroll) ---------- */
+  $('[data-marq]').forEach(function (el) {
+    el.innerHTML += el.innerHTML;
+    if (reduce) return;
+    var dir = el.dataset.marq === 'right' ? 1 : -1, x = dir > 0 ? -50 : 0;
+    gsap.ticker.add(function () {
+      x += dir * (.035 + Math.min(Math.abs(vel), 40) * .012);
+      if (x <= -50) x += 50; if (x > 0) x -= 50;
+      gsap.set(el, { xPercent: x });
+    });
+  });
+
+  /* ---------- horizontal scroll sections (desktop) ---------- */
+  ScrollTrigger.matchMedia({
+    '(min-width:901px)': function () {
+      $('[data-hscroll]').forEach(function (sec) {
+        var track = sec.querySelector('[data-hscroll-track]');
+        var dist = function () { return track.scrollWidth - sec.clientWidth; };
+        gsap.to(track, { x: function () { return -dist(); }, ease: 'none', scrollTrigger: {
+          trigger: sec, start: sec.dataset.hscrollStart || 'top top', end: function () { return '+=' + dist(); },
+          pin: true, scrub: .6, invalidateOnRefresh: true, anticipatePin: 1 } });
+      });
+    }
+  });
+
+  /* ---------- pointer effects ---------- */
+  if (fine && !reduce) {
+    $('[data-mag]').forEach(function (el) {
+      var xt = gsap.quickTo(el, 'x', { duration: .5, ease: 'elastic.out(1,.6)' }), yt = gsap.quickTo(el, 'y', { duration: .5, ease: 'elastic.out(1,.6)' });
+      el.addEventListener('pointermove', function (e) { var r = el.getBoundingClientRect(); xt((e.clientX - r.left - r.width / 2) * .3); yt((e.clientY - r.top - r.height / 2) * .4); });
+      el.addEventListener('pointerleave', function () { xt(0); yt(0); });
+    });
+    $('[data-tilt]').forEach(function (el) {
+      var rx = gsap.quickTo(el, 'rotationX', { duration: .5, ease: 'power3' }), ry = gsap.quickTo(el, 'rotationY', { duration: .5, ease: 'power3' });
+      gsap.set(el, { transformPerspective: 900 });
+      el.addEventListener('pointermove', function (e) { var r = el.getBoundingClientRect(); ry(((e.clientX - r.left) / r.width - .5) * 10); rx(-((e.clientY - r.top) / r.height - .5) * 10); });
+      el.addEventListener('pointerleave', function () { rx(0); ry(0); });
+    });
+    var cur = $('.cursor')[0];
+    if (cur) {
+      var lab = cur.querySelector('span');
+      gsap.set(cur, { xPercent: -50, yPercent: -50 });
+      var cx = gsap.quickTo(cur, 'x', { duration: .35, ease: 'power3' }), cy = gsap.quickTo(cur, 'y', { duration: .35, ease: 'power3' });
+      addEventListener('pointermove', function (e) { cx(e.clientX); cy(e.clientY); cur.style.opacity = 1; });
+      $('[data-cursor]').forEach(function (el) {
+        el.addEventListener('pointerenter', function () { cur.classList.add('big'); if (lab) lab.textContent = el.dataset.cursor; });
+        el.addEventListener('pointerleave', function () { cur.classList.remove('big'); if (lab) lab.textContent = ''; });
+      });
+    }
+    var gl = $('.glow')[0];
+    if (gl) {
+      var gx = gsap.quickTo(gl, 'x', { duration: .6, ease: 'power3' }), gy = gsap.quickTo(gl, 'y', { duration: .6, ease: 'power3' });
+      addEventListener('pointermove', function (e) { gx(e.clientX); gy(e.clientY); });
+    }
+  }
+
+  /* ---------- preloader + intro ---------- */
+  var started = false;
+  function intro() {
+    var tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    loadQueue.forEach(function (fn, i) { fn(tl, i); });
+    var heroes = $('[data-hero]');
+    if (heroes.length) {
+      if (custom && CFG.hero) CFG.hero(heroes, tl);
+      else tl.fromTo(heroes, { opacity: 0, y: reduce ? 0 : 36 }, { opacity: 1, y: 0, duration: 1, stagger: .12, clearProps: 'transform' }, .25);
+    }
+    FX.hooks.forEach(function (f) { try { f(tl); } catch (e) { console.error(e); } });
+    FX.refresh();
+  }
+  function go() {
+    if (started) return; started = true;
+    if (pre && !(custom && CFG.preloader)) gsap.to(pre, { yPercent: -100, duration: reduce ? .01 : .9, ease: 'expo.inOut', onComplete: function () { pre.remove(); } });
+    intro();
+  }
+  if (pre && custom && CFG.preloader) {
+    CFG.preloader(pre, go);
+  } else {
+    var bar = pre && pre.querySelector('.bar b');
+    if (bar) gsap.to(bar, { width: '100%', duration: reduce ? .01 : 1.1, ease: 'power2.inOut', onComplete: go });
+    else if (pre) setTimeout(go, reduce ? 0 : 900); else go();
+  }
+  // failsafe: never trap a visitor on the loader (e.g. link opened in a background tab)
+  setTimeout(function () { go(); if (pre && pre.parentNode) setTimeout(function () { if (pre.parentNode) pre.remove(); }, 1800); }, 4500);
+  addEventListener('load', function () { ScrollTrigger.refresh(); });
+})();
+
+</script>
+<script>
+(function(){
+  var menu={
+    Coffee:[['Pour-over','Rotating single origin, brewed to order','5.5','m3'],['Flat white','Double ristretto, silky microfoam','4.8','m2'],['Cortado','Equal parts espresso and warm milk','4.2','m1'],['Cold brew','Steeped 18 hours, served over oak ice','5.0','m4']],
+    Brunch:[['Whipped ricotta toast','Honey, thyme, charred sourdough','11','m1'],['Soft scramble','Chives, crème fraîche, brioche','12','m2'],['Shakshuka','Slow tomato, feta, flatbread','14','m3'],['Miso-butter mushrooms','Poached egg, rye, pickled shallot','13','m4']],
+    Bakery:[['Almond croissant','Twice-baked, frangipane','5.2','m2'],['Cardamom bun','Brown butter glaze','4.8','m1'],['Olive oil loaf','Orange zest, sea salt','4.5','m3'],['Sourdough, whole','Baked at 6am, gone by noon','9','m4']]
+  };
+  var tabs=document.getElementById('tabs'),list=document.getElementById('mlist'),fimg=document.getElementById('fimg');
+  function img(k){return (window.IMG&&IMG[k])||''}
+  function show(t){
+    list.innerHTML=menu[t].map(function(r){return '<div class="mi" data-k="'+r[3]+'"><div style="display:contents"><img class="th" src="'+img(r[3])+'" alt="" loading="lazy"><div><h3>'+r[0]+'</h3><p>'+r[1]+'</p></div></div><div class="pr">$'+r[2]+'</div></div>'}).join('');
+    [].forEach.call(tabs.children,function(b){b.classList.toggle('on',b.textContent===t)});
+    if(window.gsap&&!(window.FX&&FX.reduce)) gsap.fromTo('#mlist .mi',{opacity:0,'--ln':0},{opacity:1,'--ln':1,duration:1.3,stagger:.14,ease:'sine.out'});
+    bind();
+  }
+  Object.keys(menu).forEach(function(t){var b=document.createElement('button');b.className='tab';b.textContent=t;b.onclick=function(){show(t)};tabs.appendChild(b)});
+  // cursor-following preview image
+  var fine=matchMedia('(hover:hover) and (pointer:fine)').matches, qx,qy;
+  if(fine&&window.gsap){qx=gsap.quickTo(fimg,'x',{duration:.5,ease:'power3'});qy=gsap.quickTo(fimg,'y',{duration:.5,ease:'power3'});
+    addEventListener('pointermove',function(e){qx(e.clientX+30);qy(e.clientY-150)})}
+  function bind(){
+    if(!fine||!window.gsap) return;
+    [].forEach.call(list.children,function(row){
+      row.addEventListener('pointerenter',function(){fimg.style.backgroundImage='url("'+img(row.dataset.k)+'")';gsap.to(fimg,{opacity:1,scale:1,rotate:-3,duration:.5,ease:'back.out(1.6)'})});
+      row.addEventListener('pointerleave',function(){gsap.to(fimg,{opacity:0,scale:.8,duration:.35})});
+    });
+  }
+  show('Coffee');
+  // nav solidifies after hero
+  var nav=document.getElementById('nav');addEventListener('scroll',function(){nav.classList.toggle('solid',scrollY>60)},{passive:true});
+  if(!window.FX||!window.gsap) return;
+  FX.onIntro(function(){
+    if(FX.reduce) return;
+    gsap.from('.badge',{scale:0,rotate:-90,duration:1.2,ease:'back.out(1.6)',delay:.8});
+    gsap.to('.hero h1',{yPercent:-10,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  });
+})();
+</script>
+<script>
+(function () {
+  if (!window.FX || !window.gsap || FX.reduce) return;
+  // coffee beans drift down the hero at different depths (fewer on phones)
+  var hero = document.querySelector('.hero'), box = document.createElement('div'); box.className = 'beanfx'; box.setAttribute('aria-hidden', 'true');
+  var n = matchMedia('(max-width:900px)').matches ? 5 : 9, pos = [6, 18, 31, 44, 58, 71, 84, 92, 50];
+  for (var i = 0; i < n; i++) {
+    var b = document.createElement('i'); var s = .7 + Math.random() * .9;
+    b.style.left = pos[i] + '%'; b.style.top = (8 + Math.random() * 70) + '%'; b.style.transform = 'scale(' + s + ') rotate(' + Math.round(Math.random() * 180) + 'deg)';
+    box.appendChild(b);
+  }
+  hero.appendChild(box);
+  FX.$('i', box).forEach(function (b, i) {
+    gsap.to(b, { y: '+=' + (14 + i * 3), rotation: '+=' + (i % 2 ? 40 : -40), duration: 4 + i * .6, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to(b, { yPercent: 220 + i * 40, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: .8 } });
+  });
+  // the story photos sway in opposite directions as you scroll past
+  gsap.to('.imgs .a', { rotation: -3, ease: 'none', scrollTrigger: { trigger: '.story', start: 'top bottom', end: 'bottom top', scrub: 1 } });
+  gsap.to('.imgs .b', { rotation: 4, ease: 'none', scrollTrigger: { trigger: '.story', start: 'top bottom', end: 'bottom top', scrub: 1 } });
+})();
+</script>
+</body>
+</html>

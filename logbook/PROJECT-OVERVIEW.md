@@ -246,3 +246,11 @@ content, that was the majority of the site ignoring the setting.
 - No pricing figures anywhere on the site — deliberate positioning
   ("every brand's needs are different").
 - No contact form — deliberate ("no forms, no gatekeeping").
+
+## Static demo sites (`public/previews/`)
+
+Eight standalone HTML pages (six sample sites + two Shopify theme previews)
+served as-is at `/previews/<name>/`, outside the React app. Each is a single
+`index.html` with inlined CSS/JS. Link to them with plain `<a href>` tags,
+not React Router `<Link>` (which would land on the SPA's 404). Added
+2026-10-05; see CHANGELOG.md.
