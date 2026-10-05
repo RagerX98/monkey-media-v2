@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Monkey Media">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VOLT — Strength &amp; Conditioning Club</title>
+<meta name="description" content="VOLT is a strength and conditioning club. Demo preview site.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+html{overflow-x:clip}body{overflow-x:clip}
+:root{--bg:#0a0a0a;--ink:#f5f5f0;--mute:#8d8d86;--line:rgba(255,255,255,.14);--volt:#d4ff00;--hot:#ff4d1c;--gut:clamp(18px,4.5vw,60px)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.disp{font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;line-height:.92;letter-spacing:.005em}
+a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
+.wrap{max-width:1360px;margin:0 auto;padding:0 var(--gut)}
+.volt{color:var(--volt)}
+.outline{-webkit-text-stroke:2px var(--ink);color:transparent}
+.split .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}.split .w>span{display:inline-block}
+.pre{position:fixed;inset:0;z-index:100;background:var(--volt);color:#000;display:grid;place-items:center}
+.pre .disp{font-size:clamp(5rem,26vw,16rem);line-height:.85}
+.pre .bar{position:absolute;left:0;bottom:0;height:10px;width:100%;background:rgba(0,0,0,.15)}.pre .bar b{display:block;height:100%;width:0;background:#000}
+.prog{position:fixed;left:0;top:0;height:4px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--volt);z-index:60}
+.cursor{position:fixed;left:0;top:0;z-index:70;width:14px;height:14px;border-radius:50%;background:var(--volt);pointer-events:none;mix-blend-mode:difference;opacity:0;display:grid;place-items:center;transition:width .35s,height .35s,background .3s}
+.cursor span{font:700 .72rem Inter;color:#000;letter-spacing:.08em;opacity:0}
+.cursor.big{width:96px;height:96px;mix-blend-mode:normal}.cursor.big span{opacity:1}
+@media (hover:none){.cursor{display:none}}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gut);mix-blend-mode:difference;color:#fff}
+.logo{font-family:Anton;font-size:2rem;letter-spacing:.02em;display:flex;align-items:center;gap:.3rem}
+.logo b{width:.7rem;height:1.4rem;background:var(--volt);clip-path:polygon(60% 0,0 55%,45% 55%,25% 100%,100% 40%,55% 40%)}
+.links{display:flex;gap:2.4rem;font-size:.85rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.links a{position:relative}.links a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:#fff;transform:scaleX(0);transform-origin:left;transition:transform .35s}.links a:hover::after{transform:scaleX(1)}
+.burger{display:none;width:46px;height:46px;border:0;background:transparent;position:relative;cursor:pointer}
+.burger i{position:absolute;left:8px;right:8px;height:3px;background:#fff;transition:.3s}.burger i:first-child{top:16px}.burger i:last-child{top:27px}
+.burger.on i:first-child{top:21px;transform:rotate(45deg)}.burger.on i:last-child{top:21px;transform:rotate(-45deg)}
+.sheet{position:fixed;inset:0;z-index:45;background:var(--volt);color:#000;display:flex;flex-direction:column;justify-content:center;gap:.2rem;padding:var(--gut);clip-path:inset(0 0 100% 0);transition:clip-path .7s cubic-bezier(.7,0,.2,1);pointer-events:none}
+.sheet.on{clip-path:inset(0 0 0 0);pointer-events:auto}.sheet a{font-family:Anton;font-size:clamp(3.4rem,16vw,6rem);text-transform:uppercase;line-height:1}
+.btn{display:inline-flex;align-items:center;gap:.8rem;padding:1.1rem 2rem;background:var(--volt);color:#000;font-weight:700;font-size:.9rem;letter-spacing:.12em;text-transform:uppercase;border:0;cursor:pointer;position:relative;overflow:hidden;clip-path:polygon(0 0,100% 0,100% 70%,92% 100%,0 100%)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line);clip-path:none}
+
+/* hero */
+.hero{position:relative;height:100svh;min-height:640px;display:flex;align-items:flex-end;overflow:hidden}
+.hero .bg{position:absolute;inset:0;overflow:hidden}.hero .bg img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;opacity:.64}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.45),transparent 30%,rgba(10,10,10,.92) 100%)}
+.hero .wrap{position:relative;z-index:2;width:100%;padding-bottom:clamp(40px,7vw,90px)}
+.hero h1{font-size:clamp(4.4rem,17.5vw,17rem)}
+.hero h1 .row{display:block}
+.hrow{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;margin-top:2rem;flex-wrap:wrap}
+.hrow p{max-width:27rem;color:#cfcfc8;font-size:clamp(1rem,1.8vw,1.15rem)}
+.scrollhint{position:absolute;right:var(--gut);top:50%;z-index:3;writing-mode:vertical-rl;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--mute);display:flex;align-items:center;gap:.8rem}
+.scrollhint::after{content:"";width:1px;height:60px;background:linear-gradient(var(--volt),transparent);animation:drop 1.8s infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+.marq{background:var(--volt);color:#000;overflow:hidden;padding:1rem 0;transform:rotate(-1.5deg) scale(1.03);margin:-18px 0 0;position:relative;z-index:5}
+.marq .track{display:flex;width:max-content;white-space:nowrap}
+.marq span{font-family:Anton;font-size:clamp(1.6rem,4vw,2.8rem);text-transform:uppercase;padding-right:2.2rem;display:flex;align-items:center;gap:2.2rem}.marq span::after{content:"⚡";font-size:.8em}
+.marq.b{background:transparent;color:var(--ink);border-block:1px solid var(--line);transform:none;margin:0}.marq.b span{-webkit-text-stroke:1.5px var(--ink);color:transparent}.marq.b span::after{color:var(--volt);-webkit-text-stroke:0}
+
+section{position:relative;z-index:2}.sec{padding:clamp(80px,12vw,170px) 0}
+.statement{font-family:Anton;text-transform:uppercase;font-size:clamp(2rem,6.4vw,6rem);line-height:1;max-width:19ch;letter-spacing:.005em}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--volt);display:flex;align-items:center;gap:.8rem;margin-bottom:1.4rem}.eyebrow::before{content:"";width:34px;height:2px;background:var(--volt)}
+
+/* programs */
+.hs{height:100svh;min-height:600px;display:flex;flex-direction:column;justify-content:center;overflow:hidden;background:#111}
+.hs .top{padding:0 var(--gut);display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;gap:1rem}
+.hs h2{font-size:clamp(3rem,9vw,8rem)}
+.hs .count{font-family:Anton;font-size:clamp(1rem,2vw,1.4rem);color:var(--mute)}
+.track{display:flex;gap:18px;padding:0 var(--gut);width:max-content}
+.pc{position:relative;width:min(70vw,440px);height:min(62svh,560px);overflow:hidden;flex:none;background:#222;isolation:isolate}
+.pc .im{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 1.1s cubic-bezier(.2,.7,.2,1);opacity:.78}.pc .im2{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .6s,transform 1.1s cubic-bezier(.2,.7,.2,1)}.pc:hover .im2{opacity:.92;transform:scale(1.08)}
+.pc:hover .im{transform:scale(1.08)}
+.pc::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.9));z-index:1}
+.pc .in{position:absolute;left:24px;right:24px;bottom:24px;z-index:2}
+.pc .n{font-family:Anton;color:var(--volt);font-size:1.2rem}.pc h3{font-size:clamp(2.4rem,4.4vw,3.6rem);margin:.2rem 0 .5rem}.pc p{color:#cfcfc8;font-size:.92rem;max-width:22rem}
+.pc .tagrow{display:flex;gap:.4rem;margin-top:.9rem;flex-wrap:wrap}.pc .tagrow i{font-style:normal;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--line);padding:.3rem .6rem}
+
+/* banner */
+.banner{position:relative;height:clamp(420px,80vh,760px);overflow:hidden;display:grid;place-items:center;text-align:center}
+.banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.4}
+.banner .in{position:relative;z-index:2;padding:0 var(--gut)}.banner h2{font-size:clamp(3.2rem,12vw,11rem)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.stat{padding:clamp(30px,5vw,60px) 0 clamp(30px,5vw,60px) clamp(0px,2vw,28px);border-right:1px solid var(--line)}.stat:last-child{border:0}
+.stat b{display:block;font-family:Anton;font-size:clamp(3.4rem,8.5vw,8rem);line-height:.9;font-weight:400}.stat>span{color:var(--mute);font-size:.82rem;letter-spacing:.16em;text-transform:uppercase}
+
+/* schedule */
+.days{display:flex;gap:.5rem;flex-wrap:wrap;margin:2rem 0 1.4rem}
+.day{font:700 .82rem Inter;letter-spacing:.12em;text-transform:uppercase;padding:.8rem 1.3rem;border:2px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;transition:.25s}
+.day:hover{border-color:var(--volt)}.day.on{background:var(--volt);color:#000;border-color:var(--volt)}
+.sched{border-top:1px solid var(--line)}
+.row2{display:grid;grid-template-columns:110px 1.4fr 1fr 100px;gap:1rem;align-items:center;padding:1.3rem 0;border-bottom:1px solid var(--line);transition:padding .35s,background .35s}
+.row2:hover{padding-left:16px;background:rgba(212,255,0,.06)}
+.row2 .t{font-family:Anton;font-size:1.6rem;color:var(--volt)}.row2 .c{font-family:Anton;font-size:clamp(1.5rem,3vw,2.3rem);text-transform:uppercase}.row2 .co{color:var(--mute)}.row2 .sp{text-align:right;font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.sp.full{color:var(--hot)}
+
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+.plan{border:2px solid var(--line);padding:clamp(24px,3vw,40px);display:flex;flex-direction:column;gap:1.2rem;transition:transform .5s cubic-bezier(.2,.7,.2,1),border-color .3s}
+.plan:hover{transform:translateY(-10px);border-color:var(--volt)}
+.plan.hot{background:var(--volt);color:#000;border-color:var(--volt)}
+.plan h3{font-size:2.2rem}.plan .amt{font-family:Anton;font-size:clamp(3.6rem,6vw,5.4rem);line-height:.9}.plan .amt small{font:600 .9rem Inter;opacity:.6;text-transform:uppercase;letter-spacing:.1em}
+.plan ul{list-style:none;display:grid;gap:.7rem;margin-bottom:auto;font-size:.95rem}.plan li::before{content:"/";color:var(--volt);margin-right:.7rem;font-weight:800}.plan.hot li::before{color:#000}
+.plan.hot .btn{background:#000;color:var(--volt)}
+.flag{align-self:flex-start;font:800 .68rem Inter;letter-spacing:.16em;text-transform:uppercase;background:#000;color:var(--volt);padding:.4rem .7rem}
+
+.final{text-align:center;padding:clamp(70px,13vw,190px) var(--gut);background:var(--volt);color:#000;position:relative;overflow:hidden}
+.final h2{font-size:clamp(3.6rem,15vw,14rem);margin-bottom:1.6rem}
+.final form{display:flex;max-width:520px;margin:0 auto;border:3px solid #000}
+.final input{flex:1;min-width:0;border:0;background:transparent;padding:1.1rem 1.2rem;font:600 1rem Inter;color:#000;outline:none}.final input::placeholder{color:rgba(0,0,0,.55)}
+.final form .btn{background:#000;color:var(--volt);clip-path:none}
+footer{position:relative;z-index:2;padding:40px 0 60px;color:var(--mute);font-size:.85rem}footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}footer a{color:var(--ink);border-bottom:1px solid var(--line)}
+/* motion: counter + diagonal wipe, slam text, hard cuts */
+.pre{display:block}
+.pre__tag{position:absolute;left:var(--gut);top:22px;font:700 .8rem Inter;letter-spacing:.3em}
+.pre__n{position:absolute;left:var(--gut);bottom:34px;font-size:clamp(7rem,38vw,26rem);line-height:.78;transform:skewX(-8deg);transform-origin:0 100%;letter-spacing:-.02em}
+.pre__bar{position:absolute;left:0;right:0;bottom:0;height:12px;background:rgba(0,0,0,.18)}.pre__bar b{display:block;width:0;height:100%;background:#000}
+
+
+.js [data-hero]{opacity:0}
+
+@media (max-width:900px){
+  .links{display:none}.burger{display:block}.scrollhint{display:none}
+  .hs{height:auto;min-height:0;padding:80px 0 60px}.hs .track{width:auto;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px;-webkit-overflow-scrolling:touch;scrollbar-width:none}.hs .track::-webkit-scrollbar{display:none}.pc{scroll-snap-align:center;width:78vw;height:min(60svh,480px)}
+  .stats{grid-template-columns:1fr 1fr}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .row2{grid-template-columns:70px 1fr auto;gap:.6rem}.row2 .co{display:none}.row2 .t{font-size:1.2rem}
+  .plans{grid-template-columns:1fr}
+  .outline{-webkit-text-stroke:1.5px var(--ink)}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.js [data-hero]{opacity:1}}
+</style>
+</head>
+<body>
+<div class="pre"><div class="pre__tag">VOLT / STRENGTH CLUB</div><div class="disp pre__n"><span id="pn">000</span></div><div class="pre__bar"><b></b></div></div>
+<div class="prog"></div><div class="cursor"><span></span></div>
+<nav><a href="#" class="logo"><b></b>VOLT</a><div class="links"><a href="#programs">Programs</a><a href="#schedule">Schedule</a><a href="#join">Membership</a></div><a href="#join" class="links" style="gap:0"><span style="border:2px solid #fff;padding:.55rem 1.1rem">Free trial</span></a><button class="burger" aria-label="Menu"><i></i><i></i></button></nav>
+<div class="sheet"><a href="#programs">Programs</a><a href="#schedule">Schedule</a><a href="#join">Join</a></div>
+
+<header class="hero">
+  <div class="bg"><img data-img="hero" data-eager data-parallax=".1" alt=""></div>
+  <div class="scrollhint">Scroll</div>
+  <div class="wrap">
+    <h1 data-split="load"><span class="row">Forge your</span><span class="row volt">limit.</span></h1>
+    <div class="hrow"><p data-hero>Strength &amp; conditioning for people who'd rather earn it. Coached sessions, serious equipment, zero ego. Your first week is on us.</p><div data-hero style="display:flex;gap:.8rem;flex-wrap:wrap"><a href="#join" class="btn" data-mag>Claim free week →</a><a href="#programs" class="btn ghost" data-mag>Explore programs</a></div></div>
+  </div>
+</header>
+
+<div class="marq"><div class="track" data-marq><span>Train hard</span><span>No excuses</span><span>Earn every rep</span><span>Stronger daily</span><span>Train hard</span><span>No excuses</span></div></div>
+
+<section class="sec"><div class="wrap"><div class="eyebrow">The VOLT way</div><p class="statement" data-scrub>No mirrors. No gimmicks. Just heavy iron, honest coaching and a crew that shows up at 6am.</p></div></section>
+
+<section class="hs" id="programs" data-hscroll>
+  <div class="top"><div><div class="eyebrow">Programs</div><h2 data-split>Pick your <span class="volt">weapon</span></h2></div><div class="count">04 PROGRAMS →</div></div>
+  <div class="track" data-hscroll-track>
+    <article class="pc" data-cursor="VIEW"><div class="im" data-img="strength"></div><div class="in"><div class="n">01</div><h3>Strength</h3><p>Barbell fundamentals and progressive overload with a coach on every rack.</p><div class="tagrow"><i>60 min</i><i>All levels</i></div></div></article>
+    <article class="pc" data-cursor="VIEW"><div class="im" data-img="condition"></div><div class="in"><div class="n">02</div><h3>Conditioning</h3><p>Engine-building intervals that leave nothing in the tank. Scalable for everyone.</p><div class="tagrow"><i>45 min</i><i>High intensity</i></div></div></article>
+    <article class="pc" data-cursor="VIEW"><div class="im" data-img="mobility"></div><div class="in"><div class="n">03</div><h3>Mobility</h3><p>Move better, lift longer. Flow sessions to fix the stiffness that holds you back.</p><div class="tagrow"><i>50 min</i><i>Recovery</i></div></div></article>
+    <article class="pc" data-cursor="VIEW"><div class="im" data-img="recovery"></div><div class="in"><div class="n">04</div><h3>Recovery</h3><p>Sauna, cold plunge and guided breathwork. Recover like you train — on purpose.</p><div class="tagrow"><i>Open daily</i><i>Members</i></div></div></article>
+  </div>
+</section>
+
+<section class="banner"><img data-img="banner" data-parallax=".12" alt=""><div class="in"><h2 class="disp" data-split>Heavy is <span class="volt">the point.</span></h2></div></section>
+
+<section class="sec" style="padding-bottom:0"><div class="wrap"><div class="stats" data-stagger>
+  <div class="stat"><b><span data-count="4800">0</span></b><span>Active members</span></div>
+  <div class="stat"><b class="volt"><span data-count="60">0</span>+</b><span>Classes every week</span></div>
+  <div class="stat"><b><span data-count="18">0</span></b><span>Expert coaches</span></div>
+  <div class="stat"><b class="volt"><span data-count="24">0</span>/7</b><span>Access, 365 days</span></div>
+</div></div></section>
+
+<section class="sec" id="schedule"><div class="wrap">
+  <div class="eyebrow">Schedule</div><h2 class="disp" data-split style="font-size:clamp(3rem,9vw,8rem)">Book your <span class="outline">session</span></h2>
+  <div class="days" id="days"></div><div class="sched" id="sched"></div>
+</div></section>
+
+<section class="sec" id="join" style="padding-top:0"><div class="wrap">
+  <div class="eyebrow">Membership</div><h2 class="disp" data-split style="font-size:clamp(3rem,9vw,8rem);margin-bottom:clamp(30px,5vw,60px)">Choose your <span class="volt">level</span></h2>
+  <div class="plans" data-stagger>
+    <div class="plan"><h3>Drop-in</h3><div class="amt">$25<small> / visit</small></div><ul><li>Any class, any time</li><li>Locker &amp; showers</li><li>No commitment</li></ul><a href="#" class="btn ghost" data-mag>Book a visit</a></div>
+    <div class="plan hot"><span class="flag">Most popular</span><h3>Unlimited</h3><div class="amt">$89<small> / month</small></div><ul><li>Unlimited classes</li><li>24/7 open gym</li><li>Recovery lounge access</li><li>Free guest pass monthly</li></ul><a href="#" class="btn" data-mag>Start free week →</a></div>
+    <div class="plan"><h3>Elite</h3><div class="amt">$149<small> / month</small></div><ul><li>Everything in Unlimited</li><li>1:1 coaching, 2x month</li><li>Nutrition programming</li></ul><a href="#" class="btn ghost" data-mag>Go Elite</a></div>
+  </div>
+</div></section>
+
+<section class="final"><h2 class="disp" data-split>Your first week <span class="outline" style="-webkit-text-stroke-color:#000">is free</span></h2>
+  <form onsubmit="event.preventDefault();this.querySelector('button').textContent='You\'re in ⚡'"><input type="email" placeholder="Enter your email" aria-label="Email"><button class="btn" type="submit">Claim it</button></form></section>
+
+<div class="marq b" style="padding:.8rem 0"><div class="track" data-marq="right"><span>Forge your limit</span><span>Forge your limit</span><span>Forge your limit</span></div></div>
+<footer><div class="wrap"><span>© 2026 VOLT Strength Club. Fictional brand — demo preview.</span><span>Made by <a href="#">Monkey Media</a>. Do not copy.</span></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+/* ONE place to swap every image on this site.
+   Replace any URL with your own file, e.g. hero: "assets/hero.jpg" (generated or shot imagery).
+   Placeholders below are Unsplash photos. */
+var u = function (id, w) { return 'https://images.unsplash.com/photo-' + id + '?auto=format&fit=crop&q=75&w=' + (w || 1600); };
+window.IMG = {
+  hero:     u('1581009146145-b5ef050c2e1e', 2000) + '&sat=-55',
+  banner:   u('1517836357463-d25dfeac3438', 2000) + '&sat=-100',
+  strength: u('1517836357463-d25dfeac3438', 1000),
+  condition:u('1534438327276-14e5300c3a48', 1000),
+  mobility: u('1571019613454-1cb2f99b2d8b', 1000),
+  recovery: u('1540555700478-4be289fbecef', 1000)
+};
+
+</script>
+<script>
+/* VOLT motion identity: counter + diagonal wipe -> slam text -> hard cuts */
+window.FX_CONFIG = {
+  lenis: { duration: .95 },
+  count: { duration: 1.1, ease: 'power4.out' },
+
+  preloader: function (pre, done) {
+    var n = pre.querySelector('#pn'), bar = pre.querySelector('.pre__bar b'), o = { v: 0 };
+    gsap.set(pre, { clipPath: 'polygon(0 0,100% 0,100% 100%,0 100%)' });
+    gsap.timeline()
+      .to(o, { v: 100, duration: 1.35, ease: 'power3.inOut', onUpdate: function () { n.textContent = ('00' + Math.round(o.v)).slice(-3); bar.style.width = o.v + '%'; } })
+      .call(done, null, '+=.05')
+      .to(pre, { clipPath: 'polygon(72% 0,100% 0,100% 100%,0 100%)', duration: .38, ease: 'power3.in' }, '<')
+      .to(pre, { clipPath: 'polygon(100% 0,100% 0,100% 100%,100% 100%)', duration: .42, ease: 'power3.out', onComplete: function () { pre.remove(); } });
+  },
+
+  // words are slammed in from alternating sides, then the screen shakes
+  split: function (el, ctx) {
+    var w = FX.words(el);
+    gsap.set(w, { xPercent: function (i) { return i % 2 ? 130 : -130; }, skewX: function (i) { return i % 2 ? -22 : 22; } });
+    var slam = function (tl, at) {
+      var t = tl || gsap;
+      t.to(w, { xPercent: 0, skewX: 0, duration: .62, stagger: .07, ease: 'power4.out' }, at);
+      if (ctx.load) gsap.delayedCall((at || 0) + .55 + w.length * .07, function () {
+        gsap.fromTo('.hero .wrap', { x: 0 }, { keyframes: [{ x: -9, duration: .04 }, { x: 8, duration: .04 }, { x: -5, duration: .04 }, { x: 3, duration: .04 }, { x: 0, duration: .05 }] });
+      });
+    };
+    if (ctx.load) { ctx.queue(function (tl, i) { slam(tl, .05 + i * .1); }); return; }
+    ScrollTrigger.create({ trigger: el, start: 'top 88%', once: true, onEnter: function () { slam(null, 0); } });
+  },
+
+  // statement text fills in from outline to solid as you scroll
+  scrub: function (el) {
+    var w = FX.words(el);
+    w.forEach(function (s) { s.style.webkitTextStroke = '1.5px #f5f5f0'; s.style.color = 'rgba(245,245,240,0)'; s.parentNode.style.overflow = 'visible'; });
+    gsap.to(w, { color: 'rgba(245,245,240,1)', stagger: .1, ease: 'none', scrollTrigger: { trigger: el, start: 'top 80%', end: 'bottom 45%', scrub: true } });
+  },
+
+  hero: function (els, tl) {
+    tl.fromTo(els, { opacity: 0, x: -70, skewX: -12 }, { opacity: 1, x: 0, skewX: 0, duration: .6, stagger: .08, ease: 'power4.out' }, .6);
+  },
+
+  // quick cuts: blocks shoot in from alternating sides; stats stomp; plans cut up
+  reveal: function (el, kind) {
+    var st = { trigger: el, start: 'top 90%', once: true };
+    if (kind === 'stagger') {
+      if (el.classList.contains('stats')) {
+        gsap.fromTo(el.children, { opacity: 0, scale: 1.45, y: 24 }, { opacity: 1, scale: 1, y: 0, duration: .55, stagger: .08, ease: 'expo.out', scrollTrigger: st });
+      } else {
+        gsap.fromTo(el.children, { opacity: 0, y: 90, skewY: 7 }, { opacity: 1, y: 0, skewY: 0, duration: .7, stagger: .09, ease: 'power4.out', scrollTrigger: st });
+      }
+      return;
+    }
+    var i = [].indexOf.call(el.parentNode.children, el) % 2;
+    gsap.fromTo(el, { opacity: 0, x: i ? 90 : -90, skewX: i ? -9 : 9 }, { opacity: 1, x: 0, skewX: 0, duration: .65, ease: 'power4.out', scrollTrigger: st });
+  }
+};
+</script>
+<script>
+/* fx.js — shared engine for the preview sites (smooth scroll, menu, images, counters, marquee,
+   pointer effects, preloader/intro plumbing). Each site gives itself a different personality by
+   defining window.FX_CONFIG BEFORE this file loads:
+     FX_CONFIG = {
+       lenis:     { duration: 1.6 },                       // smooth-scroll options
+       preloader: function (pre, done) { ... },            // custom loader; call done() when the intro should start
+       hero:      function (els, tl) { ... },              // entrance for [data-hero] elements
+       split:     function (el, ctx) { ... },              // replaces word-rise for [data-split]   (ctx.load, ctx.queue(fn))
+       scrub:     function (el) { ... },                   // replaces [data-scrub]
+       reveal:    function (el, kind) { ... },             // replaces [data-r] / [data-stagger] / [data-clip]  (kind: 'r'|'stagger'|'clip')
+       parallax:  false,                                   // disable default [data-parallax]
+       count:     { duration: 2, ease: 'power3.out' }
+     }
+   Attributes: data-img, data-hero, data-split[="load"], data-scrub, data-r, data-stagger, data-clip,
+   data-parallax, data-count, data-mag, data-tilt, data-marq[="right"], data-hscroll, data-cursor.
+   Hooks: FX.onIntro(fn(tl)) runs after the preloader. Helpers: FX.words(el), FX.chars(el), FX.velocity(). */
+(function () {
+  var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+  var CFG = window.FX_CONFIG || {};
+  var $ = function (s, c) { return [].slice.call((c || document).querySelectorAll(s)); };
+  var FX = window.FX = { reduce: reduce, fine: fine, $: $, cfg: CFG, lenis: null, hooks: [], onIntro: function (f) { this.hooks.push(f); }, velocity: function () { return 0; } };
+
+  /* ---------- images from config ---------- */
+  var st = document.createElement('style');
+  st.textContent = 'img[data-img].loaded{animation:fxin .9s ease backwards}@keyframes fxin{from{opacity:0}}';
+  document.head.appendChild(st);
+  if (window.IMG) {
+    $('[data-img]').forEach(function (el) {
+      var u = IMG[el.dataset.img]; if (!u) return;
+      if (el.tagName === 'IMG') {
+        el.decoding = 'async';
+        if (!el.hasAttribute('data-eager')) el.loading = 'lazy';
+        el.addEventListener('load', function () { el.classList.add('loaded'); FX.refresh && FX.refresh(); });
+        el.src = u;
+      } else { el.style.backgroundImage = 'url("' + u + '")'; }
+    });
+  }
+
+  var pre = $('.pre')[0];
+  if (!window.gsap) { // graceful fallback if CDN is blocked
+    if (pre) pre.remove();
+    $('[data-count]').forEach(function (e) { e.textContent = e.dataset.count; });
+    return;
+  }
+  document.documentElement.classList.add('js');
+  gsap.registerPlugin(ScrollTrigger);
+  var rt; FX.refresh = function () { clearTimeout(rt); rt = setTimeout(function () { ScrollTrigger.refresh(); }, 150); };
+
+  /* ---------- smooth scroll ---------- */
+  var vel = 0;
+  FX.velocity = function () { return vel; };
+  if (!reduce && window.Lenis) {
+    var lenis = FX.lenis = new Lenis(Object.assign({ duration: 1.15, smoothWheel: true }, CFG.lenis || {}));
+    lenis.on('scroll', function (e) { vel = e.velocity; ScrollTrigger.update(); });
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+  var burger = $('.burger')[0], sheet = $('.sheet')[0];
+  function closeMenu() {
+    if (!burger) return;
+    burger.classList.remove('on'); sheet && sheet.classList.remove('on');
+    FX.lenis && FX.lenis.start(); document.body.style.overflow = '';
+  }
+  if (burger && sheet) burger.addEventListener('click', function () {
+    var on = burger.classList.toggle('on'); sheet.classList.toggle('on', on);
+    if (on) { FX.lenis && FX.lenis.stop(); document.body.style.overflow = 'hidden'; } else closeMenu();
+  });
+  $('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var id = a.getAttribute('href'); if (id.length < 2) return;
+      var t = document.querySelector(id); if (!t) return; e.preventDefault(); closeMenu();
+      FX.lenis ? FX.lenis.scrollTo(t, { offset: -70 }) : t.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  /* ---------- progress bar ---------- */
+  if ($('.prog')[0]) gsap.to('.prog', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: .2 } });
+
+  /* ---------- text helpers ---------- */
+  function copyGradient(root, sel) {
+    $('.grad-text', root).forEach(function (g) {
+      var bg = getComputedStyle(g).backgroundImage;
+      $(sel, g).forEach(function (s) { s.style.backgroundImage = bg; s.style.webkitBackgroundClip = s.style.backgroundClip = 'text'; s.style.color = 'transparent'; });
+    });
+  }
+  // words: <span.w><span>word</span></span>  (outer clips, inner animates)
+  function words(el) {
+    if (el.__words) return el.__words;
+    (function walk(node) {
+      [].slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) {
+          var f = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(function (t) {
+            if (!t) return;
+            if (/^\s+$/.test(t)) { f.appendChild(document.createTextNode(' ')); return; }
+            var w = document.createElement('span'); w.className = 'w';
+            var i = document.createElement('span'); i.textContent = t; w.appendChild(i); f.appendChild(w);
+          });
+          node.replaceChild(f, n);
+        } else if (n.nodeType === 1 && n.tagName !== 'BR') walk(n);
+      });
+    })(el);
+    el.classList.add('split');
+    copyGradient(el, '.w>span');
+    return (el.__words = $('.w>span', el));
+  }
+  // chars: <span.cw><span.ch>c</span>…</span> per word (words never break across lines)
+  function chars(el, o) {
+    if (el.__chars) return el.__chars;
+    o = o || {}; var ws = [], cs = [];
+    (function walk(node) {
+      [].slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) {
+          var f = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(function (t) {
+            if (!t) return;
+            if (/^\s+$/.test(t)) { f.appendChild(document.createTextNode(' ')); return; }
+            var w = document.createElement('span'); w.className = 'cw'; w.style.display = 'inline-block'; w.style.whiteSpace = 'nowrap';
+            t.split('').forEach(function (c) {
+              var s = document.createElement('span'); s.className = 'ch'; s.textContent = c;
+              if (o.inlineBlock) s.style.display = 'inline-block';
+              w.appendChild(s); cs.push(s);
+            });
+            ws.push(w); f.appendChild(w);
+          });
+          node.replaceChild(f, n);
+        } else if (n.nodeType === 1 && n.tagName !== 'BR') walk(n);
+      });
+    })(el);
+    copyGradient(el, '.cw');
+    return (el.__chars = { words: ws, chars: cs });
+  }
+  FX.words = words; FX.chars = chars;
+
+  /* ---------- split text ---------- */
+  var loadQueue = [];
+  var custom = !reduce;
+  $('[data-split]').forEach(function (el) {
+    var isLoad = el.dataset.split === 'load';
+    if (custom && CFG.split) { CFG.split(el, { load: isLoad, queue: function (fn) { loadQueue.push(fn); }, fine: fine }); return; }
+    var w = words(el);
+    gsap.set(w, { yPercent: 115, rotate: reduce ? 0 : 4 });
+    if (reduce) { gsap.set(w, { yPercent: 0 }); return; }
+    if (isLoad) { loadQueue.push(function (tl, i) { tl.to(w, { yPercent: 0, rotate: 0, duration: 1.2, stagger: .07, ease: 'power4.out' }, .05 + i * .1); }); return; }
+    gsap.to(w, { yPercent: 0, rotate: 0, duration: 1.1, stagger: .06, ease: 'power4.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+  });
+  $('[data-scrub]').forEach(function (el) {
+    if (custom && CFG.scrub) { CFG.scrub(el); return; }
+    var w = words(el);
+    gsap.set(w, { yPercent: 0 }); w.forEach(function (x) { x.parentNode.style.overflow = 'visible'; });
+    if (reduce) return;
+    gsap.fromTo(w, { opacity: .14 }, { opacity: 1, stagger: .12, ease: 'none', scrollTrigger: { trigger: el, start: 'top 82%', end: 'bottom 45%', scrub: true } });
+  });
+
+  /* ---------- generic reveals ---------- */
+  $('[data-r]').forEach(function (el) {
+    if (custom && CFG.reveal) { CFG.reveal(el, 'r'); return; }
+    gsap.fromTo(el, { opacity: 0, y: reduce ? 0 : 44 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
+  });
+  $('[data-stagger]').forEach(function (el) {
+    if (custom && CFG.reveal) { CFG.reveal(el, 'stagger'); return; }
+    gsap.fromTo(el.children, { opacity: 0, y: reduce ? 0 : 50 }, { opacity: 1, y: 0, duration: .9, stagger: .1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+  });
+  $('[data-clip]').forEach(function (el) {
+    if (reduce) return;
+    if (CFG.reveal) { CFG.reveal(el, 'clip'); return; }
+    gsap.fromTo(el, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+    var im = el.querySelector('img,[data-img]');
+    if (im) gsap.from(im, { scale: 1.35, duration: 1.8, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+  });
+  $('[data-parallax]').forEach(function (el) {
+    if (reduce || CFG.parallax === false) return;
+    var v = parseFloat(el.dataset.parallax) || .15, host = el.parentNode;
+    gsap.set(el, { scale: 1 + v * 2 + .06 });
+    gsap.fromTo(el, { yPercent: -v * 100 }, { yPercent: v * 100, ease: 'none', scrollTrigger: { trigger: host, start: 'top bottom', end: 'bottom top', scrub: true } });
+  });
+
+  /* ---------- counters ---------- */
+  var cc = Object.assign({ duration: 2.2, ease: 'power3.out' }, CFG.count || {});
+  $('[data-count]').forEach(function (el) {
+    var end = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), o = { v: 0 };
+    ScrollTrigger.create({ trigger: el, start: 'top 92%', once: true, onEnter: function () {
+      gsap.to(o, { v: end, duration: reduce ? .01 : cc.duration, ease: cc.ease, onUpdate: function () { el.textContent = o.v.toLocaleString(undefined, { minimumFractionDigits: dec, maximumFractionDigits: dec }); } });
+    } });
+  });
+
+  /* ---------- marquee (speeds up with scroll) ---------- */
+  $('[data-marq]').forEach(function (el) {
+    el.innerHTML += el.innerHTML;
+    if (reduce) return;
+    var dir = el.dataset.marq === 'right' ? 1 : -1, x = dir > 0 ? -50 : 0;
+    gsap.ticker.add(function () {
+      x += dir * (.035 + Math.min(Math.abs(vel), 40) * .012);
+      if (x <= -50) x += 50; if (x > 0) x -= 50;
+      gsap.set(el, { xPercent: x });
+    });
+  });
+
+  /* ---------- horizontal scroll sections (desktop) ---------- */
+  ScrollTrigger.matchMedia({
+    '(min-width:901px)': function () {
+      $('[data-hscroll]').forEach(function (sec) {
+        var track = sec.querySelector('[data-hscroll-track]');
+        var dist = function () { return track.scrollWidth - sec.clientWidth; };
+        gsap.to(track, { x: function () { return -dist(); }, ease: 'none', scrollTrigger: {
+          trigger: sec, start: sec.dataset.hscrollStart || 'top top', end: function () { return '+=' + dist(); },
+          pin: true, scrub: .6, invalidateOnRefresh: true, anticipatePin: 1 } });
+      });
+    }
+  });
+
+  /* ---------- pointer effects ---------- */
+  if (fine && !reduce) {
+    $('[data-mag]').forEach(function (el) {
+      var xt = gsap.quickTo(el, 'x', { duration: .5, ease: 'elastic.out(1,.6)' }), yt = gsap.quickTo(el, 'y', { duration: .5, ease: 'elastic.out(1,.6)' });
+      el.addEventListener('pointermove', function (e) { var r = el.getBoundingClientRect(); xt((e.clientX - r.left - r.width / 2) * .3); yt((e.clientY - r.top - r.height / 2) * .4); });
+      el.addEventListener('pointerleave', function () { xt(0); yt(0); });
+    });
+    $('[data-tilt]').forEach(function (el) {
+      var rx = gsap.quickTo(el, 'rotationX', { duration: .5, ease: 'power3' }), ry = gsap.quickTo(el, 'rotationY', { duration: .5, ease: 'power3' });
+      gsap.set(el, { transformPerspective: 900 });
+      el.addEventListener('pointermove', function (e) { var r = el.getBoundingClientRect(); ry(((e.clientX - r.left) / r.width - .5) * 10); rx(-((e.clientY - r.top) / r.height - .5) * 10); });
+      el.addEventListener('pointerleave', function () { rx(0); ry(0); });
+    });
+    var cur = $('.cursor')[0];
+    if (cur) {
+      var lab = cur.querySelector('span');
+      gsap.set(cur, { xPercent: -50, yPercent: -50 });
+      var cx = gsap.quickTo(cur, 'x', { duration: .35, ease: 'power3' }), cy = gsap.quickTo(cur, 'y', { duration: .35, ease: 'power3' });
+      addEventListener('pointermove', function (e) { cx(e.clientX); cy(e.clientY); cur.style.opacity = 1; });
+      $('[data-cursor]').forEach(function (el) {
+        el.addEventListener('pointerenter', function () { cur.classList.add('big'); if (lab) lab.textContent = el.dataset.cursor; });
+        el.addEventListener('pointerleave', function () { cur.classList.remove('big'); if (lab) lab.textContent = ''; });
+      });
+    }
+    var gl = $('.glow')[0];
+    if (gl) {
+      var gx = gsap.quickTo(gl, 'x', { duration: .6, ease: 'power3' }), gy = gsap.quickTo(gl, 'y', { duration: .6, ease: 'power3' });
+      addEventListener('pointermove', function (e) { gx(e.clientX); gy(e.clientY); });
+    }
+  }
+
+  /* ---------- preloader + intro ---------- */
+  var started = false;
+  function intro() {
+    var tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    loadQueue.forEach(function (fn, i) { fn(tl, i); });
+    var heroes = $('[data-hero]');
+    if (heroes.length) {
+      if (custom && CFG.hero) CFG.hero(heroes, tl);
+      else tl.fromTo(heroes, { opacity: 0, y: reduce ? 0 : 36 }, { opacity: 1, y: 0, duration: 1, stagger: .12, clearProps: 'transform' }, .25);
+    }
+    FX.hooks.forEach(function (f) { try { f(tl); } catch (e) { console.error(e); } });
+    FX.refresh();
+  }
+  function go() {
+    if (started) return; started = true;
+    if (pre && !(custom && CFG.preloader)) gsap.to(pre, { yPercent: -100, duration: reduce ? .01 : .9, ease: 'expo.inOut', onComplete: function () { pre.remove(); } });
+    intro();
+  }
+  if (pre && custom && CFG.preloader) {
+    CFG.preloader(pre, go);
+  } else {
+    var bar = pre && pre.querySelector('.bar b');
+    if (bar) gsap.to(bar, { width: '100%', duration: reduce ? .01 : 1.1, ease: 'power2.inOut', onComplete: go });
+    else if (pre) setTimeout(go, reduce ? 0 : 900); else go();
+  }
+  // failsafe: never trap a visitor on the loader (e.g. link opened in a background tab)
+  setTimeout(function () { go(); if (pre && pre.parentNode) setTimeout(function () { if (pre.parentNode) pre.remove(); }, 1800); }, 4500);
+  addEventListener('load', function () { ScrollTrigger.refresh(); });
+})();
+
+</script>
+<script>
+(function(){
+  var data={
+    Mon:[['06:00','Strength','Coach Maya','Open'],['12:15','Conditioning','Coach Dre','6 spots'],['18:30','Strength','Coach Tom','Full']],
+    Tue:[['06:30','Mobility','Coach Lena','Open'],['17:30','Conditioning','Coach Dre','Open'],['19:00','Strength','Coach Maya','3 spots']],
+    Wed:[['06:00','Strength','Coach Tom','Open'],['12:15','Mobility','Coach Lena','Open'],['18:30','Conditioning','Coach Dre','Full']],
+    Thu:[['06:30','Conditioning','Coach Dre','4 spots'],['17:30','Strength','Coach Maya','Open'],['19:00','Recovery flow','Coach Lena','Open']],
+    Fri:[['06:00','Strength','Coach Tom','Open'],['12:15','Conditioning','Coach Dre','Open'],['17:00','Friday Throwdown','All coaches','8 spots']],
+    Sat:[['08:00','Team WOD','Coach Dre','Full'],['09:30','Strength','Coach Maya','2 spots'],['11:00','Mobility','Coach Lena','Open']],
+    Sun:[['09:00','Long Run Club','Coach Tom','Open'],['10:30','Recovery flow','Coach Lena','Open']]
+  };
+  var days=document.getElementById('days'),sched=document.getElementById('sched');
+  function show(d){
+    sched.innerHTML=data[d].map(function(r){return '<div class="row2"><span class="t">'+r[0]+'</span><span class="c">'+r[1]+'</span><span class="co">'+r[2]+'</span><span class="sp'+(r[3]==='Full'?' full':'')+'">'+r[3]+'</span></div>'}).join('');
+    [].forEach.call(days.children,function(b){b.classList.toggle('on',b.textContent===d)});
+    if(window.gsap&&!(window.FX&&FX.reduce)) gsap.from('#sched .row2',{opacity:0,x:function(i){return i%2?80:-80},skewX:function(i){return i%2?-8:8},duration:.5,stagger:.07,ease:'power4.out'});
+  }
+  Object.keys(data).forEach(function(d){var b=document.createElement('button');b.className='day';b.textContent=d;b.onclick=function(){show(d)};days.appendChild(b)});
+  show('Mon');
+  if(!window.FX||!window.gsap) return;
+  FX.onIntro(function(){
+    if(FX.reduce) return;
+    gsap.fromTo('.hero .bg img',{scale:1.25},{scale:1.1,duration:2.2,ease:'expo.out'});
+    gsap.to('.hero h1',{yPercent:-12,opacity:.2,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  });
+})();
+</script>
+<script>
+(function () {
+  if (!window.FX || !window.gsap || FX.reduce) return;
+  // program cards: grayscale photo, colour photo fades in on hover (no CSS filters = smooth on phones)
+  FX.$('.pc .im').forEach(function (im) {
+    var color = window.IMG && IMG[im.dataset.img]; if (!color) return;
+    im.style.backgroundImage = 'url("' + color + '&sat=-100")';
+    var c = document.createElement('div'); c.className = 'im2'; c.style.backgroundImage = 'url("' + color + '")'; im.parentNode.insertBefore(c, im.nextSibling);
+  });
+  // oversized headline drifts sideways while the section scrolls past
+  ScrollTrigger.matchMedia({ '(min-width:1100px)': function () { gsap.fromTo('.banner h2', { xPercent: 5 }, { xPercent: -5, ease: 'none', scrollTrigger: { trigger: '.banner', start: 'top bottom', end: 'bottom top', scrub: true } }); } });
+})();
+</script>
+</body>
+</html>

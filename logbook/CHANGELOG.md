@@ -3,6 +3,31 @@
 Newest first. Each entry ties to a commit hash where one exists. See
 logbook/README.md for how to add to this.
 
+## 2026-10-05 — static demo sites at /previews/
+
+**Added eight self-contained demo pages under public/previews/** so the
+agency can show sample work by industry. They are plain static HTML (each
+file inlines its own CSS/JS; GSAP, Lenis, Google Fonts and Unsplash photos
+load from public CDNs) and are **not part of the React app**.
+
+- /previews/ — gallery index
+- /previews/nova-ai-saas/, ynn-fintech/, olt-fitness/,
+  ember-oak-cafe/, loudly-agency/, halcyon-real-estate/ — six
+  sample sites, each with its own motion style
+- /previews/shopify-street-theme/, shopify-bloom-theme/ — static
+  previews of two Shopify themes
+
+Vite copies public/ to the build output untouched, and Vercel serves a
+real file before applying the ercel.json SPA rewrite, so no routing
+change was needed.
+
+**Link to them with a plain <a href="/previews/...">, never React
+Router's <Link>** — a <Link> would route inside the SPA and render the
+app's own 404 instead of the demo.
+
+Demo brands are fictional. Placeholder photos are Unsplash hotlinks; to
+swap in generated images, edit the window.IMG = {...} block in each
+page.
 ## 2026-09-23 (later) — `436b5c5`, `0e5c4e2`
 
 **Three post-deploy fixes, two of them reported from the live site**
