@@ -72,7 +72,7 @@ export default function Hero() {
             className="mt-10 flex flex-wrap gap-4"
           >
             <CTAButton to="/contact">Start a Project</CTAButton>
-            <CTAButton to="/portfolio" variant="ghost">
+            <CTAButton to="/work" variant="ghost">
               See Our Work
             </CTAButton>
           </motion.div>

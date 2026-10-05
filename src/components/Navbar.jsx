@@ -23,9 +23,8 @@ const ITEM = {
 
 const LINKS = [
   { to: '/', label: 'Home' },
-  { to: '/about', label: 'About' },
   { to: '/services', label: 'Services' },
-  { to: '/portfolio', label: 'Portfolio' },
+  { to: '/work', label: 'Our Work' },
   { to: '/pricing', label: 'Pricing' },
   { to: '/contact', label: 'Contact' },
 ];

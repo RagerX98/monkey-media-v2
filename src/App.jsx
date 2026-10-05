@@ -1,11 +1,11 @@
 import { Suspense, lazy, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Layout from './layouts/Layout';
 import Home from './pages/Home';
 
 const About = lazy(() => import('./pages/About'));
 const Services = lazy(() => import('./pages/Services'));
-const Portfolio = lazy(() => import('./pages/Portfolio'));
+const Work = lazy(() => import('./pages/Work'));
 const Pricing = lazy(() => import('./pages/Pricing'));
 const Contact = lazy(() => import('./pages/Contact'));
 
@@ -27,7 +27,9 @@ export default function App() {
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
             <Route path="services" element={<Services />} />
-            <Route path="portfolio" element={<Portfolio />} />
+            <Route path="work" element={<Work />} />
+            {/* The old Portfolio page now lives at the bottom of Our Work. */}
+            <Route path="portfolio" element={<Navigate to="/work" replace />} />
             <Route path="pricing" element={<Pricing />} />
             <Route path="contact" element={<Contact />} />
           </Route>

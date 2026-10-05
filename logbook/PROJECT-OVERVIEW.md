@@ -44,9 +44,14 @@ both in one component.
 | `/` | Home |
 | `/about` | About |
 | `/services` | Services |
-| `/portfolio` | Portfolio |
+| `/work` | Our Work |
+| `/portfolio` | redirects to `/work` |
 | `/pricing` | Pricing |
 | `/contact` | Contact |
+
+**Navigation order** (`Navbar.jsx`, which also drives the mobile takeover):
+Home, Services, Our Work, Pricing, Contact, plus the Book a Call button.
+**About is deliberately footer-only** — it is not in the top menu.
 
 All routes render inside `Layout` (`src/layouts/Layout.jsx`), which wraps
 `<Outlet />` with `Navbar`, `Footer`, and the global `PeekingMonkey` easter
@@ -63,8 +68,14 @@ egg.
   an interactive banana-catching mini-game, instead of team photos.
 - **Services.jsx** — full list of all 8 services from `src/data/services.js`
   as static cards (number, title, blurb).
-- **Portfolio.jsx** — client wall from `src/data/clients.js`, gated behind
-  a one-time `BananaRain` entrance animation on mount.
+- **Work.jsx** ("Our Work") — data-driven. Sections come from
+  `src/data/work.js`: every category with items gets a grid of `WorkCard`s
+  (brand-preview thumbnail, kind, title, blurb, tags, and a "View live" link
+  that opens the demo in a new tab with a plain `<a>`); a category with no
+  items yet shows a "Coming soon" tile (AI Visuals and Reels today). Below
+  that is the client wall from `src/data/clients.js`, gated behind
+  a one-time `BananaRain` entrance animation on mount. Replaced the old
+  Portfolio page; `/portfolio` redirects here.
 - **Pricing.jsx** — no price list by design ("we don't do cookie-cutter
   pricing"); just a mascot, a pitch, and a CTA to `/contact`.
 - **Contact.jsx** — no form; two cards linking to `mailto:` and a
@@ -155,7 +166,13 @@ animation code):
   peeks in from a screen edge every 10–24s, dodges with a joke reaction if
   clicked. Has an inline comment explaining the hit-padding math — read it
   before touching the peek-offset constants.
-- `BananaRain.jsx` — falling-banana-emoji burst, reused by Portfolio
+- `work/SiteThumb.jsx` — thumbnails for Our Work. The eight demo sites are
+  drawn as small browser windows showing each brand's own hero, in plain
+  CSS/SVG with every measurement in `cqw` (container-relative), so they stay
+  sharp at any size and add no image weight. Display type here is Syne, which
+  is far wider than the demos' real fonts — **check headlines against the
+  frame width** (VOLT and Monkey Street both had to be re-sized).
+- `BananaRain.jsx` — falling-banana-emoji burst, reused by Our Work
   (on page load), CTABanner (on hover/click), and OrbitField (every 5th
   catch).
 - `OrbitField.jsx` — the mini-game standing in for a team section on
@@ -199,8 +216,13 @@ animation code):
   same `ServiceCard.jsx` component, so the *card treatment* is shared
   and can't drift again — but a copy change still has to be made in both
   arrays.
+- `work.js` — everything on the Our Work page: `WORK_CATEGORIES` (id, label,
+  blurb) and the `work` array (id, category, kind, title, description, tags,
+  href, external, thumb). **To add work, add one object to `work`.** Use
+  `thumb: { image, alt }` for a real screenshot, AI visual or reel poster
+  frame, or `thumb: { scene }` for a built-in brand preview.
 - `clients.js` — 12 clients, each with a PNG + WebP logo pair and a
-  category. Used by both `Portfolio.jsx` and `sections/Clients.jsx`.
+  category. Used by both `Work.jsx` and `sections/Clients.jsx`.
 
 ## Design system (`src/index.css`)
 
@@ -221,7 +243,7 @@ Tailwind v4 theme tokens, defined via `@theme` (no separate config file):
 **Typeface rule:** Syne (via the `font-display` utility, paired with
 `font-extrabold` — Syne stops at 800, there is no 900) goes on
 display-scale headings only. Montserrat keeps everything else, including
-card titles like `ServiceCard`'s `h3` and the Portfolio tile `h2`, where
+card titles like `ServiceCard`'s `h3` and the Our Work client-tile `h3`, where
 Syne's wider letterforms read as cramped. Syne is appreciably wider than
 Montserrat, so check long words against the gutter on a 390px viewport
 before setting a flat heading size — two overflow bugs came from exactly
@@ -251,6 +273,8 @@ content, that was the majority of the site ignoring the setting.
 
 Eight standalone HTML pages (six sample sites + two Shopify theme previews)
 served as-is at `/previews/<name>/`, outside the React app. Each is a single
-`index.html` with inlined CSS/JS. Link to them with plain `<a href>` tags,
+`index.html` with inlined CSS/JS. The Our Work page presents them and the
+bare `/previews/` index just redirects to `/work`. Link to them with plain
+`<a href>` tags,
 not React Router `<Link>` (which would land on the SPA's 404). Added
 2026-10-05; see CHANGELOG.md.
