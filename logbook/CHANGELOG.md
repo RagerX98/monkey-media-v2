@@ -3,6 +3,33 @@
 Newest first. Each entry ties to a commit hash where one exists. See
 logbook/README.md for how to add to this.
 
+## 2026-10-05 (later) — Our Work page, navigation reorder
+
+**New "Our Work" page; About moves to the footer; Services is second.**
+
+- **Navigation** is now Home, Services, Our Work, Pricing, Contact (plus Book
+  a Call). About is removed from the top menu and lives only in the footer.
+- **`/work` (Our Work)** replaces Portfolio. It is driven by the new
+  `src/data/work.js`: the eight demo sites (six websites, two Shopify themes)
+  as cards with a crisp brand-preview thumbnail, tags and a "View live" link
+  that opens the demo in a new tab. AI Visuals and Reels show as "Coming
+  soon" tiles and turn into real sections the moment an item with that
+  category is added to `work.js`. The client logo wall moved to the bottom of
+  this page.
+- **`/portfolio` redirects to `/work`**; the homepage "See Our Work" button
+  and the footer link now point at `/work`. `Portfolio.jsx` deleted.
+- **`/previews/` (the plain gallery index) is now a redirect to `/work`.** The
+  eight demos themselves are unchanged at `/previews/<name>/`.
+- New files: `src/pages/Work.jsx`, `src/data/work.js`,
+  `src/components/work/SiteThumb.jsx`. Thumbnails are pure CSS/SVG in `cqw`
+  units, so they add no image weight; swap in real images with
+  `thumb: { image }`.
+- Verified locally: `npm run lint` clean, `npm run build` clean (Our Work
+  chunk 23.5 kB, 6.8 kB gzip), every internal link resolves, mobile menu order
+  correct, no horizontal overflow at 375px.
+- Docs: routes table, pages, components, data and DEPLOYMENT.md (Git
+  integration now connected) updated.
+
 ## 2026-10-05 — static demo sites at /previews/
 
 **Added eight self-contained demo pages under public/previews/** so the

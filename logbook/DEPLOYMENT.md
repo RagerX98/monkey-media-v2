@@ -16,6 +16,30 @@
   (`/(.*) → /index.html`) so React Router's client-side routes don't 404
   on a hard refresh or direct link.
 
+## Status update (2026-10-05): GitHub → Vercel auto-deploy is connected
+
+The Vercel project had **no Git repository connected** (every production
+deployment in the dashboard carried the CLI `>_` icon). That is the real
+cause of gotcha 1 below — it was never flaky, it simply wasn't linked.
+`RagerX98/monkey-media-v2` is now connected under Settings → Git. The first
+automatic deploy (commit `67d4d98`) reported success in about 30 seconds and
+the change was live straight away.
+
+- **Pushing to `master` now deploys to production by itself.** A merge is a
+  go-live, so merge deliberately.
+- Branch pushes get Vercel preview deployments. Preview URLs sit behind
+  Vercel's deployment protection (login required), so open them while signed
+  in to Vercel.
+- `vercel --prod --yes` is now a fallback, not a required step. Still check
+  the live site after a deploy (see "Verifying a deploy actually landed").
+- The dashboard's **Redeploy** button re-runs the *old* source of that
+  deployment; it does not pick up newer commits.
+- On the Windows machine the remote is HTTPS
+  (`https://github.com/RagerX98/monkey-media-v2.git`), authenticated through
+  Git Credential Manager (one browser sign-in), so the SSH-passphrase
+  problem in gotcha 2 does not apply there. Git and Node.js were installed
+  with `winget` (`Git.Git`, `OpenJS.NodeJS.LTS`).
+
 ## Normal workflow
 
 ```
