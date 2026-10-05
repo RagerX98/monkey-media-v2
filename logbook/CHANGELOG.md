@@ -7,6 +7,8 @@ logbook/README.md for how to add to this.
 
 **New "Our Work" page; About moves to the footer; Services is second.**
 
+Commit `3c8df81`, merged to `master` as `4525aca` and deployed to production via the GitHub integration.
+
 - **Navigation** is now Home, Services, Our Work, Pricing, Contact (plus Book
   a Call). About is removed from the top menu and lives only in the footer.
 - **`/work` (Our Work)** replaces Portfolio. It is driven by the new
