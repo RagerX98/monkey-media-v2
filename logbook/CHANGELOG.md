@@ -3,6 +3,28 @@
 Newest first. Each entry ties to a commit hash where one exists. See
 logbook/README.md for how to add to this.
 
+## 2026-10-06 (evening) — banana cursor, social icons, homepage work order
+
+Branch `banana-cursor-icons` (`dd93ec1`, `30341c1`, `9769fa4`), merged to
+`master`.
+
+- **Cursor**: round gold dot + trailing ring by default; turns into a small
+  vector banana over buttons, cards and CTA links (with the gold "View" label
+  pill on work cards). Footer (`data-cursor-native`) and inline `.link-line`
+  links keep the round cursor, which just tightens; form fields get the system
+  caret. Replaces the earlier ring/mascot cursor.
+- **Social icons**: new `components/SocialLinks.jsx` (Instagram, WhatsApp,
+  Email as round line-icon buttons, 44–48px tap targets). Used in the footer
+  ("Find us"), every closing CTA and the mobile menu instead of spelled-out
+  names. Contact page cards use icon badges and gain an Instagram card.
+  **`CONTACT.instagram` in `data/site.js` is still a placeholder
+  (instagram.com home page) — replace with the agency's profile URL.**
+- **Homepage work rail** order is now Fynn, Loudly, VOLT, Ember & Oak,
+  Halcyon, Monkey Street, Monkey Bloom (`HOME_ORDER` in `WorkRail.jsx`); Nova
+  stays on `/work` only.
+- **Fix**: Our Work grid overflowed 320px phones (12 columns × 2rem gaps =
+  352px); horizontal gap now only from md up, grid items `min-w-0`.
+
 ## 2026-10-06 (later) — redesign goes live; original design archived
 
 - **Backups first**: the pre-redesign `master` (`d966c7c`) is tagged
