@@ -14,6 +14,10 @@ website without re-deriving context from scratch.
   that have already burned us once (don't rediscover these the hard way).
 - **CHANGELOG.md** — a dated, newest-first log of every notable change,
   tied to git commit hashes.
+- **ORIGINAL-DESIGN.md** — the pre-redesign (v1) look of the site: where it
+  is backed up (tag `v1-original-design`, branch `archive/original-design`),
+  how to view, borrow from or roll back to it, and what it looked like.
+  **Preserve these backups; never delete the tag or the archive branch.**
 
 ## How to use this with Claude
 

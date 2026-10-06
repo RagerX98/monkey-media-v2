@@ -1,212 +1,212 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { NavLink, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import CTAButton from './CTAButton';
+import MonkeyFace from './brand/MonkeyFace';
+import { lockScroll } from '../lib/smooth';
+import { CONTACT, NAV_LINKS } from '../data/site';
 import logoMark from '../assets/logo-mark.png';
 import logoMarkWebp from '../assets/logo-mark.webp';
 
-// The takeover wipes open from the burger, which sits top-right.
-const CLOSED = 'circle(0% at 88% 4%)';
-const OPEN = 'circle(150% at 88% 4%)';
+// The takeover opens as a circle from the menu button, top-right.
+const CLOSED = 'circle(0% at calc(100% - 44px) 40px)';
+const OPEN = 'circle(160% at calc(100% - 44px) 40px)';
 
-// Links land after the wipe has cleared enough of the screen to reveal them.
-const LIST = {
-  hidden: {},
-  visible: { transition: { delayChildren: 0.18, staggerChildren: 0.06 } },
-};
-
-const ITEM = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] } },
-};
-
-const LINKS = [
-  { to: '/', label: 'Home' },
-  { to: '/services', label: 'Services' },
-  { to: '/work', label: 'Our Work' },
-  { to: '/pricing', label: 'Pricing' },
-  { to: '/contact', label: 'Contact' },
-];
+function RollText({ children }) {
+  return (
+    <span className="relative block overflow-hidden">
+      <span className="block transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:-translate-y-full">
+        {children}
+      </span>
+      <span
+        aria-hidden="true"
+        className="absolute inset-0 block translate-y-full transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:translate-y-0"
+      >
+        {children}
+      </span>
+    </span>
+  );
+}
 
 export default function Navbar() {
   const { pathname } = useLocation();
   const reduceMotion = useReducedMotion();
+  const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const lastY = useRef(0);
 
+  // Hide while scrolling down, return on any scroll up.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const onScroll = () => {
+      const y = window.scrollY;
+      const dy = y - lastY.current;
+      if (Math.abs(dy) > 6) {
+        setHidden(dy > 0 && y > 160);
+        lastY.current = y;
+      }
+      setScrolled(y > 40);
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Close the takeover whenever the route changes, so tapping a link doesn't
-  // leave the overlay sitting over the new page.
   useEffect(() => {
-    setMenuOpen(false);
+    setOpen(false);
+    setHidden(false);
   }, [pathname]);
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : '';
-    if (!menuOpen) return undefined;
-
-    const onKey = (e) => {
-      if (e.key === 'Escape') setMenuOpen(false);
-    };
+    lockScroll(open);
+    if (!open) return undefined;
+    const onKey = (e) => e.key === 'Escape' && setOpen(false);
     window.addEventListener('keydown', onKey);
-
     return () => {
-      document.body.style.overflow = '';
       window.removeEventListener('keydown', onKey);
+      lockScroll(false);
     };
-  }, [menuOpen]);
+  }, [open]);
 
   return (
-    <header
-      // While the takeover is open the header has to sit ABOVE it, or the
-      // close button is unreachable: the menu is portalled to <body>, so the
-      // burger's own z-index no longer competes inside the header's stacking
-      // context. Also dropped back to transparent here — the scrolled
-      // background would otherwise paint a bar across the open menu, and its
-      // backdrop-filter is exactly what broke the panel in the first place.
-      className={`fixed inset-x-0 top-0 transition-all duration-300 ${
-        menuOpen
-          ? 'z-[70] bg-transparent'
-          : `z-40 ${
-              scrolled
-                ? 'bg-ink/90 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.08)]'
-                : 'bg-transparent'
-            }`
-      }`}
-    >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-10">
-        <NavLink to="/" className="flex items-center" onClick={() => setMenuOpen(false)}>
-          <picture>
-            <source srcSet={logoMarkWebp} type="image/webp" />
-            <motion.img
-              src={logoMark}
-              alt="Monkey Media"
-              className="h-11 w-auto md:h-12"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-            />
-          </picture>
-        </NavLink>
+    <>
+      <header
+        className={`fixed inset-x-0 top-0 transition-transform duration-500 ease-[var(--ease-out-expo)] ${
+          open ? 'z-[70]' : 'z-50'
+        } ${hidden && !open ? '-translate-y-[120%]' : 'translate-y-0'}`}
+      >
+        <nav className="mx-auto flex max-w-[1600px] items-center justify-between px-4 pt-4 md:px-8 md:pt-5">
+          <NavLink
+            to="/"
+            aria-label="Monkey Media, home"
+            className={`rounded-full px-3 py-2 transition-colors duration-300 ${
+              scrolled && !open ? 'bg-ink/75 backdrop-blur-md' : ''
+            }`}
+          >
+            <picture>
+              <source srcSet={logoMarkWebp} type="image/webp" />
+              <img src={logoMark} alt="Monkey Media" className="h-9 w-auto md:h-10" />
+            </picture>
+          </NavLink>
 
-        <div className="hidden items-center gap-8 md:flex">
-          {LINKS.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              end={link.to === '/'}
-              className={({ isActive }) =>
-                `relative font-semibold uppercase tracking-wide text-sm py-1 transition-colors ${
-                  isActive ? 'text-purple' : 'text-paper/80 hover:text-paper'
-                } group`
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  {link.label}
-                  <span
-                    className={`absolute -bottom-0.5 left-0 h-[2px] bg-purple transition-all duration-300 ${
-                      isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`}
-                  />
-                </>
-              )}
-            </NavLink>
-          ))}
-          <CTAButton to="/pricing" size="sm">
-            Book a Call
-          </CTAButton>
-        </div>
+          <div className="hidden items-center gap-3 lg:flex">
+            <ul className="flex items-center gap-1 rounded-full border border-white/10 bg-ink/70 p-1.5 backdrop-blur-md">
+              {NAV_LINKS.map((link) => (
+                <li key={link.to}>
+                  <NavLink
+                    to={link.to}
+                    end={link.to === '/'}
+                    className={({ isActive }) =>
+                      `group relative flex items-center gap-2 rounded-full px-4 py-2 text-[0.72rem] font-bold uppercase tracking-[0.14em] transition-colors ${
+                        isActive ? 'bg-paper text-ink' : 'text-paper/80 hover:text-paper'
+                      }`
+                    }
+                  >
+                    <RollText>{link.label}</RollText>
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+            <CTAButton to="/contact" variant="gold" size="sm">
+              Book a call
+            </CTAButton>
+          </div>
 
-        <button
-          type="button"
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-menu"
-          onClick={() => setMenuOpen((v) => !v)}
-          className="relative z-[70] flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
-        >
-          <motion.span
-            animate={menuOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
-            className="h-0.5 w-6 bg-paper"
-          />
-          <motion.span
-            animate={menuOpen ? { opacity: 0 } : { opacity: 1 }}
-            className="h-0.5 w-6 bg-paper"
-          />
-          <motion.span
-            animate={menuOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
-            className="h-0.5 w-6 bg-paper"
-          />
-        </button>
-      </nav>
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="site-menu"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            className={`relative grid h-14 w-14 place-items-center rounded-full transition-colors duration-300 lg:hidden ${
+              open ? 'bg-ink text-paper' : 'bg-gold text-ink'
+            }`}
+          >
+            <span className="relative block h-3.5 w-6">
+              <span
+                className={`absolute left-0 h-[2.5px] w-full rounded-full bg-current transition-all duration-500 ease-[var(--ease-out-expo)] ${
+                  open ? 'top-1/2 -translate-y-1/2 rotate-45' : 'top-0'
+                }`}
+              />
+              <span
+                className={`absolute left-0 h-[2.5px] rounded-full bg-current transition-all duration-500 ease-[var(--ease-out-expo)] ${
+                  open ? 'top-1/2 w-full -translate-y-1/2 -rotate-45' : 'bottom-0 w-2/3'
+                }`}
+              />
+            </span>
+          </button>
+        </nav>
+      </header>
 
-      {/* Portalled to <body> on purpose. The header gains
-          `backdrop-filter: blur(12px)` once scrolled past 12px, and a
-          backdrop-filter establishes a containing block for fixed-position
-          descendants — so a menu rendered inside the header positioned itself
-          against the 76px header box instead of the viewport, collapsing into
-          the top strip on any scrolled page. */}
+      {/* Portalled to <body>: the header animates `transform`, which would
+          otherwise become the containing block for this fixed overlay. */}
       {createPortal(
         <AnimatePresence>
-          {menuOpen && (
+          {open && (
             <motion.div
-              id="mobile-menu"
+              id="site-menu"
               initial={reduceMotion ? { opacity: 0 } : { clipPath: CLOSED }}
               animate={reduceMotion ? { opacity: 1 } : { clipPath: OPEN }}
               exit={reduceMotion ? { opacity: 0 } : { clipPath: CLOSED }}
-              transition={
-                reduceMotion
-                  ? { duration: 0.15 }
-                  : { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
-              }
-              className="fixed inset-0 z-[65] bg-[linear-gradient(160deg,#150f22,#0d0d0d_60%)] md:hidden"
+              transition={{ duration: reduceMotion ? 0.15 : 0.75, ease: [0.76, 0, 0.24, 1] }}
+              className="fixed inset-0 z-[65] flex flex-col overflow-hidden bg-purple lg:hidden"
             >
-              <motion.nav
-                variants={LIST}
-                initial="hidden"
-                animate="visible"
-                className="flex h-full flex-col justify-center gap-1 px-7"
-              >
-                {LINKS.map((link, i) => (
-                  <motion.div key={link.to} variants={ITEM}>
-                    <NavLink
-                      to={link.to}
-                      end={link.to === '/'}
-                      onClick={() => setMenuOpen(false)}
-                      className={({ isActive }) =>
-                        // Fluid rather than a flat text-4xl: in Syne at 36px,
-                        // "PORTFOLIO" ran 46px past the gutter on a 390px phone,
-                        // and Services/Contact cleared it by under 7px.
-                        `flex items-baseline gap-3 py-2 text-[clamp(1.6rem,7.5vw,2.25rem)] font-display font-extrabold uppercase tracking-tight ${
-                          isActive ? 'text-gold' : 'text-paper'
-                        }`
-                      }
-                    >
-                      <span className="font-sans text-xs font-bold tracking-widest text-purple">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                      {link.label}
-                    </NavLink>
-                  </motion.div>
-                ))}
+              <nav aria-label="Main" className="flex flex-1 flex-col justify-center px-6 pt-24">
+                <ul>
+                  {NAV_LINKS.map((link, i) => (
+                    <li key={link.to} className="overflow-hidden">
+                      <motion.div
+                        initial={{ y: '110%' }}
+                        animate={{ y: 0 }}
+                        transition={{ delay: 0.25 + i * 0.06, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                      >
+                        <NavLink
+                          to={link.to}
+                          end={link.to === '/'}
+                          onClick={() => setOpen(false)}
+                          className={({ isActive }) =>
+                            // Bold, not ExtraBold: at 800, "SERVICES" and
+                            // "OUR WORK" run past a 375px screen.
+                            `flex items-baseline gap-4 whitespace-nowrap py-1 font-display text-[clamp(2rem,11vw,4.2rem)] font-bold uppercase leading-[1.05] tracking-tight ${
+                              isActive ? 'text-gold' : 'text-paper'
+                            }`
+                          }
+                        >
+                          <span className="font-sans text-xs font-bold tracking-widest text-ink/60">
+                            {String(i + 1).padStart(2, '0')}
+                          </span>
+                          {link.label}
+                        </NavLink>
+                      </motion.div>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
 
-                <motion.div variants={ITEM} className="mt-8">
-                  <CTAButton to="/pricing" onClick={() => setMenuOpen(false)} size="lg">
-                    Book a Call
-                  </CTAButton>
-                </motion.div>
-              </motion.nav>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+                className="relative flex items-end justify-between gap-4 px-6 pb-8"
+              >
+                <div className="flex flex-col gap-2 text-sm font-semibold text-paper">
+                  <a href={`mailto:${CONTACT.email}`} className="link-line w-fit">
+                    {CONTACT.email}
+                  </a>
+                  <a href={CONTACT.whatsapp} target="_blank" rel="noreferrer" className="link-line w-fit">
+                    WhatsApp us
+                  </a>
+                  <a href="/about" className="link-line w-fit" onClick={() => setOpen(false)}>
+                    About the troop
+                  </a>
+                </div>
+                <MonkeyFace className="w-20 shrink-0 -rotate-12" />
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>,
         document.body
       )}
-    </header>
+    </>
   );
 }

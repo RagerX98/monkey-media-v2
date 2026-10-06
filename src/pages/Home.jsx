@@ -1,15 +1,23 @@
-import Hero from '../components/sections/Hero';
-import ServicesOverview from '../components/sections/ServicesOverview';
-import Clients from '../components/sections/Clients';
-import CTABanner from '../components/sections/CTABanner';
+import Hero from '../components/home/Hero';
+import Manifesto from '../components/home/Manifesto';
+import Ribbons from '../components/home/Ribbons';
+import ServicesList from '../components/home/ServicesList';
+import WorkRail from '../components/home/WorkRail';
+import ClientsWall from '../components/home/ClientsWall';
+import Process from '../components/home/Process';
+import BigCTA from '../components/BigCTA';
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <ServicesOverview />
-      <Clients />
-      <CTABanner />
+      <Manifesto />
+      <Ribbons />
+      <ServicesList />
+      <WorkRail />
+      <ClientsWall />
+      <Process />
+      <BigCTA />
     </>
   );
 }
