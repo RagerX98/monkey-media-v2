@@ -78,10 +78,14 @@ Starts Lenis on mount.
   and returns on scroll up; gold round menu button on mobile opening a purple
   full-screen menu (portalled to `<body>` because the header animates
   `transform`, which would otherwise contain the fixed overlay).
-- **`Cursor.jsx`** — fine pointers only. A dot plus a follower that is a thin
-  ring at rest, the mascot over links/buttons, and a gold bubble showing the
-  text of any `data-cursor="…"` attribute (cards use "View", rows "Open").
-  No mix-blend-mode (difference-blended gold vanishes on gold surfaces).
+- **`Cursor.jsx`** — fine pointers only. The visitor keeps their **normal
+  system cursor** everywhere; it turns into a small vector **banana** only over
+  things you act on (buttons, cards, CTA links — `ACTION_SELECTOR`). It stays
+  normal over plain inline text links (`.link-line`), form fields and any
+  region marked `data-cursor-native` (the whole footer). The native cursor is
+  hidden only while the banana shows (`html.banana-on`). Over elements with
+  `data-cursor="…"` a small gold pill with that label trails the banana
+  ("View" on work cards). The banana's hotspot is its stem tip.
 - **`Footer.jsx`** — big email link, page/service/contact columns, magnetic
   back-to-top, and the giant two-line `Wordmark` (mascot as the O).
 - **`PeekingMonkey.jsx`** — the existing easter egg, unchanged.

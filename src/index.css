@@ -202,8 +202,9 @@ html.lenis body {
 /* ---------------------------------------------------------------------------
    Custom cursor (fine pointers only; class added by Cursor.jsx).
 --------------------------------------------------------------------------- */
-html.has-cursor,
-html.has-cursor * {
+/* Only while the banana is showing (over buttons, cards, CTA links). */
+html.banana-on,
+html.banana-on * {
   cursor: none !important;
 }
 
@@ -214,20 +215,25 @@ html.has-cursor * {
   top: 0;
 }
 .cursor-banana {
-  transition: opacity 0.25s ease-out;
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
   will-change: transform;
+}
+.cursor-banana[data-on] {
+  opacity: 1;
 }
 /* Scale lives on the inner svg so it never fights the JS transform. A thin
    light halo keeps the dark outline readable on the ink background. */
 .cursor-banana-svg {
   transform-origin: 25% 8%;
   filter: drop-shadow(0 0 0.6px rgba(255, 255, 255, 0.45)) drop-shadow(0 3px 5px rgba(0, 0, 0, 0.35));
+  transform: scale(0.5);
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.cursor-banana[data-mode="link"] .cursor-banana-svg {
-  transform: scale(1.14);
+.cursor-banana[data-on] .cursor-banana-svg {
+  transform: scale(1.1);
 }
-.cursor-banana[data-down] .cursor-banana-svg {
+.cursor-banana[data-on][data-down] .cursor-banana-svg {
   transform: scale(0.86);
   transition-duration: 0.12s;
 }
