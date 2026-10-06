@@ -5,7 +5,8 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import CTAButton from './CTAButton';
 import MonkeyFace from './brand/MonkeyFace';
 import { lockScroll } from '../lib/smooth';
-import { CONTACT, NAV_LINKS } from '../data/site';
+import SocialLinks from './SocialLinks';
+import { NAV_LINKS } from '../data/site';
 import logoMark from '../assets/logo-mark.png';
 import logoMarkWebp from '../assets/logo-mark.webp';
 
@@ -189,14 +190,13 @@ export default function Navbar() {
                 transition={{ delay: 0.6, duration: 0.6 }}
                 className="relative flex items-end justify-between gap-4 px-6 pb-8"
               >
-                <div className="flex flex-col gap-2 text-sm font-semibold text-paper">
-                  <a href={`mailto:${CONTACT.email}`} className="link-line w-fit">
-                    {CONTACT.email}
-                  </a>
-                  <a href={CONTACT.whatsapp} target="_blank" rel="noreferrer" className="link-line w-fit">
-                    WhatsApp us
-                  </a>
-                  <a href="/about" className="link-line w-fit" onClick={() => setOpen(false)}>
+                <div className="flex flex-col gap-5">
+                  <SocialLinks tone="purple" size="sm" />
+                  <a
+                    href="/about"
+                    className="link-line w-fit text-sm font-semibold text-paper"
+                    onClick={() => setOpen(false)}
+                  >
                     About the troop
                   </a>
                 </div>

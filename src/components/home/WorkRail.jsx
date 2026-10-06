@@ -8,6 +8,10 @@ import { gsap } from '../../lib/gsap';
 
 const pad = (n) => String(n).padStart(2, '0');
 
+// The homepage shows a curated running order (ids from data/work.js); the
+// full set, Nova included, lives on /work. Phones show the first four.
+const HOME_ORDER = ['fynn', 'loudly', 'volt', 'ember-oak', 'halcyon', 'monkey-street', 'monkey-bloom'];
+
 function Card({ item, index, total }) {
   return (
     <a
@@ -49,7 +53,7 @@ function Card({ item, index, total }) {
 export default function WorkRail() {
   const sectionRef = useRef(null);
   const trackRef = useRef(null);
-  const items = work.filter((w) => w.category === 'websites' || w.category === 'shopify');
+  const items = HOME_ORDER.map((id) => work.find((w) => w.id === id)).filter(Boolean);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
