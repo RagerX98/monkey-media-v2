@@ -1,5 +1,5 @@
-import { Suspense, lazy, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layouts/Layout';
 import Home from './pages/Home';
 
@@ -9,32 +9,24 @@ const Work = lazy(() => import('./pages/Work'));
 const Pricing = lazy(() => import('./pages/Pricing'));
 const Contact = lazy(() => import('./pages/Contact'));
 
-function ScrollToTop() {
-  const { pathname } = useLocation();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-  return null;
-}
-
+// Scroll position on route change is handled by PageTransition (under the
+// curtain for clicked links, immediately for back/forward).
 export default function App() {
   return (
     <BrowserRouter>
-      <ScrollToTop />
-      <Suspense fallback={null}>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
-            <Route path="services" element={<Services />} />
-            <Route path="work" element={<Work />} />
-            {/* The old Portfolio page now lives at the bottom of Our Work. */}
-            <Route path="portfolio" element={<Navigate to="/work" replace />} />
-            <Route path="pricing" element={<Pricing />} />
-            <Route path="contact" element={<Contact />} />
-          </Route>
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="about" element={<Suspense fallback={null}><About /></Suspense>} />
+          <Route path="services" element={<Suspense fallback={null}><Services /></Suspense>} />
+          <Route path="work" element={<Suspense fallback={null}><Work /></Suspense>} />
+          {/* The old Portfolio page now lives at the bottom of Our Work. */}
+          <Route path="portfolio" element={<Navigate to="/work" replace />} />
+          <Route path="pricing" element={<Suspense fallback={null}><Pricing /></Suspense>} />
+          <Route path="contact" element={<Suspense fallback={null}><Contact /></Suspense>} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }

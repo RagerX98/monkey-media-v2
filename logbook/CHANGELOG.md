@@ -3,6 +3,57 @@
 Newest first. Each entry ties to a commit hash where one exists. See
 logbook/README.md for how to add to this.
 
+## 2026-10-06 — full site redesign (branch `redesign`, not yet live)
+
+**Every page rebuilt from scratch around one idea: the mascot is alive.**
+Brand kept as-is (ink / purple / gold / white, Syne + Montserrat, logo and
+mascot); layout, motion and most copy are new. Built on branch `redesign`
+for review; nothing merged or deployed.
+
+- **Vector mascot** (`components/brand/monkeyPaths.js`, `MonkeyFace.jsx`):
+  traced from the PNG's own pixels so it sits exactly on the logo artwork.
+  Eyes follow the pointer (or glance around on touch / when the mouse is
+  idle) and it blinks. One shared pointer loop (`lib/pointer.js`) batches
+  every reader's DOM reads before writes.
+- **Homepage**: "PURE M●NKEY ENERGY." with the mascot as the O; scrolling
+  dives the camera into the mascot's face until its white fills the screen,
+  which is where the white manifesto section begins. Then crossing service
+  ribbons, an expanding service list, a pinned horizontal work rail (desktop
+  only), a gold client wall with two scroll-reactive marquees, a "how we
+  swing" process with the mascot sliding down a vine, and a closing CTA.
+- **Inner pages**: Services (stacking service cards), Our Work (filter tabs,
+  tilt cards, coming-soon tiles), About (story, stats, values that
+  straighten as you scroll, the banana game), Pricing (how a quote works),
+  Contact (big mascot, email card that copies the address).
+- **Site-wide**: first-visit preloader (counter, then the screen opens like
+  an eye), gold curtain page transitions, custom cursor (ring / mascot over
+  links / gold "View" bubble), Lenis smooth scroll on desktop, film grain,
+  floating pill nav that hides on scroll down, purple full-screen mobile
+  menu, giant two-line wordmark in the footer.
+- **Data**: `data/site.js` (contact, nav, stats, process, values) and
+  `data/services.js` (now with short names and deliverables) are the single
+  sources of truth. `ServicesOverview`'s duplicate teaser list is gone.
+- **Removed**: `components/sections/*`, `AmbientSmoke`, `MarqueeStrip`,
+  `MonkeyMascot`, `PageFade`, `RevealWords`, `ServiceCard`, `SubtleReveal`,
+  `CustomCursor` (all replaced). New dependency: `lenis`.
+- **Gotchas found while building** (also in PROJECT-OVERVIEW):
+  - Tailwind 4 puts utilities in a cascade layer, so any *unlayered* custom
+    CSS beats them regardless of specificity. Custom classes now live in
+    `@layer components`.
+  - Syne 800 is ~45% wider than 700 ("ENERGY." 7.07em vs 4.83em). Big
+    display lines use 700 on phones and 800 from md up.
+  - GSAP files animations created inside a timeline callback under the
+    *caller's* `gsap.context`; the hero intro was being reverted when the
+    preloader unmounted. `lib/ready.js` now runs callbacks on a fresh frame.
+  - Tight tracking (-0.035em) pushes the last glyph's ink past its box;
+    `.mask` has side padding so slide-up reveals don't shave letters.
+- **Verified locally** (dev server, desktop and phone sizes): `npm run lint`
+  and `npm run build` clean; no console errors on any route; `/portfolio`
+  and unknown routes redirect; every headline mask fits from 320px to 1536px;
+  no sideways scroll at 320/375/414; hero fits 320×568 up to 1920×1080;
+  scrolling the homepage held ~60fps with no long frames after first load.
+  Not yet seen on a real phone.
+
 ## 2026-10-05 (later) — Our Work page, navigation reorder
 
 **New "Our Work" page; About moves to the footer; Services is second.**
