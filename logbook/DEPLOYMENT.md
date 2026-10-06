@@ -40,17 +40,41 @@ the change was live straight away.
   problem in gotcha 2 does not apply there. Git and Node.js were installed
   with `winget` (`Git.Git`, `OpenJS.NodeJS.LTS`).
 
-## Normal workflow
+## Normal workflow (since 2026-10-05)
 
 ```
-git add <files>
-git commit -m "..."
+git checkout -b <feature-branch>
+# …work, commit…
+git push -u origin <feature-branch>   # Vercel builds a preview (login required)
+# review the preview, then:
+git checkout master
+git merge --no-ff <feature-branch>
+git push origin master                # Vercel deploys production by itself
+```
+
+Then load https://monkeymedia.agency and confirm the change is there (see
+"Verifying a deploy actually landed"). `vercel --prod --yes` is only a
+fallback if the GitHub integration ever stops triggering.
+
+## Backups and rollback
+
+- **Before any large change, tag the current `master`** and push the tag, so
+  the previous version can always be rebuilt. The pre-redesign site is tagged
+  `v1-original-design` (also branch `archive/original-design`); see
+  ORIGINAL-DESIGN.md.
+- **Fastest rollback**: Vercel dashboard → Deployments → pick the previous
+  production deployment → *Instant Rollback*. No code change; the next push
+  to `master` deploys again.
+- **Permanent rollback**: `git revert -m 1 <merge commit>` on `master`, push.
+
+## Older workflow (before the Git integration was connected)
+
+```
 git push origin master
 vercel --prod
 ```
 
-**Push alone is not enough — always follow with `vercel --prod`.** See
-the gotcha below.
+Push alone was not enough then — see gotcha 1 below for the history.
 
 ## Known gotchas (already hit these — don't rediscover them)
 

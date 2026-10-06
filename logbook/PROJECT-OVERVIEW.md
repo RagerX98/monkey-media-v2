@@ -1,7 +1,12 @@
 # Project Overview — Monkey Media V2
 
-Snapshot as of 2026-10-06 (full redesign, branch `redesign`). Update this
-file when structure, pages, or conventions change — see logbook/README.md.
+Snapshot as of 2026-10-06 (full redesign, live). Update this file when
+structure, pages, or conventions change — see logbook/README.md.
+
+> **The original (v1) design is preserved**, not lost: tag
+> `v1-original-design` / branch `archive/original-design` (commit `d966c7c`).
+> See **ORIGINAL-DESIGN.md** for what it looked like and how to view, borrow
+> from or roll back to it. Do not delete those refs.
 
 ## What it is
 

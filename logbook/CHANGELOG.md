@@ -3,12 +3,24 @@
 Newest first. Each entry ties to a commit hash where one exists. See
 logbook/README.md for how to add to this.
 
-## 2026-10-06 — full site redesign (branch `redesign`, not yet live)
+## 2026-10-06 (later) — redesign goes live; original design archived
+
+- **Backups first**: the pre-redesign `master` (`d966c7c`) is tagged
+  `v1-original-design` and branched as `archive/original-design`, both pushed
+  to GitHub; zip copies of the original and the redesign source are in
+  `Temp/backups/` outside the repo.
+- New **logbook/ORIGINAL-DESIGN.md** records where the original lives, how to
+  view / borrow from / roll back to it, and what it looked like.
+- DEPLOYMENT.md: normal workflow rewritten for branch → preview → merge →
+  auto-deploy, plus a backups-and-rollback section.
+- `redesign` merged into `master` and deployed by the GitHub integration.
+
+## 2026-10-06 — full site redesign (commit `7a74176`)
 
 **Every page rebuilt from scratch around one idea: the mascot is alive.**
 Brand kept as-is (ink / purple / gold / white, Syne + Montserrat, logo and
-mascot); layout, motion and most copy are new. Built on branch `redesign`
-for review; nothing merged or deployed.
+mascot); layout, motion and most copy are new. Reviewed on a Vercel branch
+preview, then merged (see the entry above).
 
 - **Vector mascot** (`components/brand/monkeyPaths.js`, `MonkeyFace.jsx`):
   traced from the PNG's own pixels so it sits exactly on the logo artwork.
