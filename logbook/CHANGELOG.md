@@ -13,7 +13,10 @@ logbook/README.md for how to add to this.
   view / borrow from / roll back to it, and what it looked like.
 - DEPLOYMENT.md: normal workflow rewritten for branch → preview → merge →
   auto-deploy, plus a backups-and-rollback section.
-- `redesign` merged into `master` and deployed by the GitHub integration.
+- `redesign` merged into `master` as `064efd8` (logbook commit `2e8e263`)
+  and deployed by the GitHub integration; checked live: every route returns
+  200, `/portfolio` and `/previews/` still redirect to `/work`, the demo
+  sites load, and the homepage dive plays.
 
 ## 2026-10-06 — full site redesign (commit `7a74176`)
 
