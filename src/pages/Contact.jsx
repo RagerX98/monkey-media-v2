@@ -3,9 +3,50 @@ import { Link } from 'react-router-dom';
 import Split from '../components/motion/Split';
 import Magnetic from '../components/motion/Magnetic';
 import MonkeyFace from '../components/brand/MonkeyFace';
+import { InstagramIcon, MailIcon, WhatsAppIcon } from '../components/SocialLinks';
 import { CONTACT } from '../data/site';
 import { gsap, prefersReducedMotion } from '../lib/gsap';
 import { onReady } from '../lib/ready';
+
+/** Round icon badge that names the channel visually (label for screen readers). */
+function IconChip({ label, children }) {
+  return (
+    <span className="grid h-12 w-12 place-items-center rounded-full bg-current/10 md:h-14 md:w-14">
+      <span className="sr-only">{label}</span>
+      {children}
+    </span>
+  );
+}
+
+function ChannelCard({ href, label, cursor, Icon, title, note, fill, accent }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-cursor={cursor}
+      className="group relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-[2rem] bg-void p-7 text-paper ring-1 ring-white/10 md:min-h-[280px] md:p-10"
+    >
+      <span
+        aria-hidden="true"
+        className={`absolute inset-0 translate-y-full transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:translate-y-0 ${fill}`}
+      />
+      <span className="relative flex items-center justify-between">
+        <span className={`transition-colors duration-500 group-hover:text-ink ${accent}`}>
+          <IconChip label={label}>
+            <Icon className="h-6 w-6" />
+          </IconChip>
+        </span>
+        <span className="eyebrow text-paper/50 transition-colors duration-500 group-hover:text-ink/70">
+          {note}
+        </span>
+      </span>
+      <span className="relative font-display text-[clamp(1.9rem,8.5vw,3.4rem)] font-bold uppercase leading-[0.95] tracking-tight transition-colors duration-500 group-hover:text-ink md:font-extrabold">
+        {title}
+      </span>
+    </a>
+  );
+}
 
 function EmailCard() {
   const [copied, setCopied] = useState(false);
@@ -34,7 +75,9 @@ function EmailCard() {
         className="absolute inset-0 translate-y-full bg-purple transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:translate-y-0"
       />
       <span className="relative flex items-center justify-between transition-colors duration-500 group-hover:text-paper">
-        <span className="eyebrow">Email</span>
+        <IconChip label="Email">
+          <MailIcon className="h-6 w-6" />
+        </IconChip>
         <span className="eyebrow" aria-live="polite">
           {copied ? 'Copied to clipboard' : 'Tap to write'}
         </span>
@@ -101,32 +144,46 @@ export default function Contact() {
           </div>
         </div>
 
-        <div className="mt-16 grid gap-5 md:mt-24 lg:grid-cols-[1.5fr_1fr]">
-          <div data-fade>
+        <div className="mt-16 grid gap-5 md:mt-24 md:grid-cols-2">
+          <div data-fade className="md:col-span-2">
             <EmailCard />
           </div>
-          <a
-            data-fade
-            href={CONTACT.whatsapp}
-            target="_blank"
-            rel="noreferrer"
-            data-cursor="Chat"
-            className="group relative flex min-h-[230px] flex-col justify-between overflow-hidden rounded-[2rem] bg-void p-7 text-paper ring-1 ring-white/10 md:min-h-[300px] md:p-10"
-          >
-            <span
-              aria-hidden="true"
-              className="absolute inset-0 translate-y-full bg-[#25D366] transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:translate-y-0"
+          <div data-fade>
+            <ChannelCard
+              href={CONTACT.whatsapp}
+              label="WhatsApp"
+              cursor="Chat"
+              Icon={WhatsAppIcon}
+              title={
+                <>
+                  Chat
+                  <br />
+                  with us
+                </>
+              }
+              note="Opens WhatsApp"
+              fill="bg-[#25D366]"
+              accent="text-[#25D366]"
             />
-            <span className="relative flex items-center justify-between">
-              <span className="eyebrow text-[#25D366] transition-colors duration-500 group-hover:text-ink">WhatsApp</span>
-              <span className="eyebrow text-paper/50 transition-colors duration-500 group-hover:text-ink/70">Opens in a new tab</span>
-            </span>
-            <span className="relative font-display text-[clamp(2rem,9vw,4rem)] font-extrabold uppercase leading-[0.95] tracking-tight transition-colors duration-500 group-hover:text-ink">
-              Chat
-              <br />
-              with us
-            </span>
-          </a>
+          </div>
+          <div data-fade>
+            <ChannelCard
+              href={CONTACT.instagram}
+              label="Instagram"
+              cursor="Follow"
+              Icon={InstagramIcon}
+              title={
+                <>
+                  See what
+                  <br />
+                  we post
+                </>
+              }
+              note="Opens Instagram"
+              fill="bg-gold"
+              accent="text-gold"
+            />
+          </div>
         </div>
 
         <p data-fade className="mt-14 text-center text-paper/55">

@@ -40,7 +40,9 @@ function WorkCard({ item, index }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: Math.min(index * 0.05, 0.3) }}
-      className={`col-span-12 ${SPANS[index % SPANS.length]}`}
+      // min-w-0: a grid item otherwise refuses to shrink below its content's
+      // min width, and the cards ran ~50px off a 320px screen.
+      className={`col-span-12 min-w-0 ${SPANS[index % SPANS.length]}`}
     >
       <a
         href={item.href}
@@ -101,7 +103,7 @@ function ComingSoon({ category, big = false }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className={`col-span-12 ${big ? '' : 'md:col-span-6'}`}
+      className={`col-span-12 min-w-0 ${big ? '' : 'md:col-span-6'}`}
     >
       <div className="relative flex h-full min-h-[260px] flex-col justify-between overflow-hidden rounded-[1.6rem] border-2 border-dashed border-white/15 p-8 md:min-h-[320px] md:p-10">
         <span className="eyebrow text-gold">Dropping soon</span>
@@ -172,7 +174,9 @@ export default function Work() {
 
       <section className="bg-ink pb-28 md:pb-40">
         <div className="mx-auto max-w-[1600px] px-5 md:px-10">
-          <motion.ul layout className="grid grid-cols-12 gap-x-8 gap-y-16 md:gap-y-20">
+          {/* Horizontal gap only where items sit side by side: twelve columns
+              with 2rem gaps need 352px, wider than a small phone. */}
+          <motion.ul layout className="grid grid-cols-12 gap-y-16 md:gap-x-6 md:gap-y-20 lg:gap-x-8">
             <AnimatePresence mode="popLayout">
               {shown.map((item, i) => (
                 <WorkCard key={item.id} item={item} index={i} />

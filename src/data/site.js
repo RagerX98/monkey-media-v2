@@ -4,6 +4,9 @@
 export const CONTACT = {
   email: 'hello@monkeymedia.agency',
   whatsapp: 'https://wa.me/918796767274',
+  // TODO: replace with the agency's real Instagram profile URL before going
+  // live. Until then the icon opens Instagram's home page.
+  instagram: 'https://www.instagram.com/',
 };
 
 export const TAGLINE = 'Fun, funky, active like a monkey.';

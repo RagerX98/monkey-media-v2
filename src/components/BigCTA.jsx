@@ -5,7 +5,7 @@ import Magnetic from './motion/Magnetic';
 import Reveal from './Reveal';
 import MonkeyFace from './brand/MonkeyFace';
 import BananaRain from './BananaRain';
-import { CONTACT } from '../data/site';
+import SocialLinks from './SocialLinks';
 
 const TONES = {
   paper: {
@@ -16,6 +16,7 @@ const TONES = {
     fill: 'bg-purple',
     hoverText: 'group-hover:text-paper',
     face: {},
+    social: 'light',
   },
   gold: {
     section: 'bg-gold text-ink',
@@ -25,6 +26,7 @@ const TONES = {
     fill: 'bg-purple',
     hoverText: 'group-hover:text-paper',
     face: { head: '#0d0d0d', eye: '#0d0d0d' },
+    social: 'light',
   },
   purple: {
     section: 'bg-purple text-paper',
@@ -34,6 +36,7 @@ const TONES = {
     fill: 'bg-paper',
     hoverText: 'group-hover:text-ink',
     face: {},
+    social: 'purple',
   },
 };
 
@@ -78,13 +81,8 @@ export default function BigCTA({
             accent={accent}
             className="display mt-6 text-[clamp(2.9rem,12.5vw,4.6rem)] font-bold md:text-[clamp(4rem,6.8vw,8.4rem)] md:font-extrabold"
           />
-          <Reveal delay={0.15} className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm font-bold">
-            <a href={`mailto:${CONTACT.email}`} className="link-line">
-              {CONTACT.email}
-            </a>
-            <a href={CONTACT.whatsapp} target="_blank" rel="noreferrer" className="link-line">
-              WhatsApp us
-            </a>
+          <Reveal delay={0.15} className="mt-10">
+            <SocialLinks tone={t.social} />
           </Reveal>
         </div>
 

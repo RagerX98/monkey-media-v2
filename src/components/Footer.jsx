@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Wordmark from './brand/Wordmark';
 import Magnetic from './motion/Magnetic';
+import SocialLinks from './SocialLinks';
 import { services } from '../data/services';
 import { CONTACT, NAV_LINKS, TAGLINE } from '../data/site';
 import { resetScroll, getLenis } from '../lib/smooth';
@@ -66,24 +67,8 @@ export default function Footer() {
 
           <div className="flex flex-col justify-between gap-10">
             <div>
-              <p className="eyebrow mb-5 text-paper/40">Elsewhere</p>
-              <ul className="space-y-2.5 text-sm font-semibold">
-                <li>
-                  <a
-                    href={CONTACT.whatsapp}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="link-line text-paper/80 hover:text-paper"
-                  >
-                    WhatsApp
-                  </a>
-                </li>
-                <li>
-                  <a href={`mailto:${CONTACT.email}`} className="link-line text-paper/80 hover:text-paper">
-                    Email
-                  </a>
-                </li>
-              </ul>
+              <p className="eyebrow mb-5 text-paper/40">Find us</p>
+              <SocialLinks tone="dark" />
             </div>
             <Magnetic>
               <button
