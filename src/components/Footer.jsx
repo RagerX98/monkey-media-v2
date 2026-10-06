@@ -17,7 +17,7 @@ function backToTop() {
 export default function Footer() {
   return (
     // data-cursor-native: a dense list of plain links, where a banana on every
-    // one reads as noise. The footer keeps the visitor's normal cursor.
+    // one reads as noise. Links here keep the round cursor (it just tightens).
     <footer data-cursor-native className="relative overflow-hidden bg-ink pt-24 text-paper md:pt-32">
       <div className="mx-auto max-w-[1600px] px-5 md:px-10">
         <div className="border-b border-white/10 pb-14">

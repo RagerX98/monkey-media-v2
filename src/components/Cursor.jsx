@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 
-// The banana only appears over things you *act* on: buttons, cards, CTA
-// links. Everywhere else the visitor keeps their normal system cursor.
+// Things you *act* on: buttons, cards, CTA links. These get the banana.
 const ACTION_SELECTOR = 'a, button, [role="button"], summary, [data-cursor], [data-cursor-grow]';
-// …except where a banana would be noise: plain inline text links (.link-line),
-// form fields, and any region marked data-cursor-native (the footer).
-const NATIVE_SELECTOR =
-  '[data-cursor-native], .link-line, input, textarea, select, [contenteditable="true"]';
+// …except where a banana would be noise: plain inline text links (.link-line)
+// and any region marked data-cursor-native (the footer). Links there keep the
+// round cursor, which just grows a little to say "clickable".
+const QUIET_SELECTOR = '[data-cursor-native], .link-line';
+// Form fields get the system cursor back (a text caret matters there).
+const FIELD_SELECTOR = 'input, textarea, select, [contenteditable="true"]';
 const LABEL_SELECTOR = '[data-cursor]';
 const FRAME_MS = 1000 / 60;
 
-// Drawn in a 32-unit box; the hotspot is the tip of the stem, top-left, so
-// the banana points like an ordinary arrow cursor.
+// The banana is drawn in a 32-unit box; its hotspot is the stem tip
+// (top-left), so it points like an ordinary arrow.
 const SIZE = 30;
 const HOT_X = (8.1 / 32) * SIZE;
 const HOT_Y = (2.5 / 32) * SIZE;
@@ -43,17 +44,28 @@ function Banana() {
 }
 
 /**
- * The visitor's normal cursor everywhere, which turns into a small banana
- * over buttons, cards and call-to-action links. The banana sits exactly on
- * the real pointer (no lag), sways a little with sideways movement and
- * squeezes on press. Over any element with data-cursor="Label" a small gold
- * pill with that label trails beside it ("View" on work cards).
+ * The site cursor, in three states:
  *
- * The native cursor is hidden only while the banana is showing (class
- * `banana-on` on <html>), so a script failure can never leave a visitor
- * without a cursor. Fine pointers with no reduced-motion preference only.
+ *   · round (default) — a gold dot locked to the pointer and a thin ring that
+ *     trails softly behind it;
+ *   · banana — over buttons, cards and call-to-action links the dot and ring
+ *     give way to a small banana that sways with movement and squeezes on
+ *     press; elements with data-cursor="Label" add a small gold label pill
+ *     beside it ("View" on work cards);
+ *   · quiet — over footer links and inline text links the round cursor stays,
+ *     its ring just tightening and filling faintly, so a dense list of links
+ *     doesn't turn into a parade of bananas.
+ *
+ * Form fields hand back the system cursor. Fine pointers with no
+ * reduced-motion preference only; `has-cursor` (which hides the native
+ * cursor) is added only once this is running, so a script failure can never
+ * leave a visitor without one. No mix-blend-mode: difference-blended gold
+ * vanishes on the site's gold surfaces.
  */
 export default function Cursor() {
+  const rootRef = useRef(null);
+  const dotRef = useRef(null);
+  const ringRef = useRef(null);
   const bananaRef = useRef(null);
   const pillRef = useRef(null);
   const labelRef = useRef(null);
@@ -74,42 +86,48 @@ export default function Cursor() {
 
   useEffect(() => {
     if (!enabled) return undefined;
+    const root = rootRef.current;
+    const dot = dotRef.current;
+    const ring = ringRef.current;
     const banana = bananaRef.current;
     const pill = pillRef.current;
     const label = labelRef.current;
     const doc = document.documentElement;
+    doc.classList.add('has-cursor');
 
     let x = -100;
     let y = -100;
-    let px = x; // pill follows softly
-    let py = y;
+    let rx = x; // ring and pill trail softly
+    let ry = y;
     let prevX = x;
-    let rot = 0;
+    let rot = -10;
     let lastT = 0;
     let raf = 0;
     let placed = false;
-    let on = false;
+    let mode = '';
 
     const render = (now) => {
       const dt = lastT ? Math.min(now - lastT, 50) : FRAME_MS;
       lastT = now;
       const f = dt / FRAME_MS;
 
-      // Sway: lean with horizontal speed, settle back when still.
+      // Banana sway: lean with horizontal speed, settle back when still.
       const vx = (x - prevX) / f;
       prevX = x;
       const target = clamp(vx * 0.9, -20, 20) - 10;
       rot += (target - rot) * (1 - 0.82 ** f);
 
-      const k = 1 - 0.78 ** f;
-      px += (x - px) * k;
-      py += (y - py) * k;
+      const k = 1 - 0.8 ** f;
+      rx += (x - rx) * k;
+      ry += (y - ry) * k;
 
+      dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      ring.style.transform = `translate3d(${rx.toFixed(2)}px, ${ry.toFixed(2)}px, 0)`;
+      pill.style.transform = `translate3d(${rx.toFixed(1)}px, ${ry.toFixed(1)}px, 0)`;
       banana.style.transform = `translate3d(${x - HOT_X}px, ${y - HOT_Y}px, 0) rotate(${rot.toFixed(2)}deg)`;
-      pill.style.transform = `translate3d(${px.toFixed(1)}px, ${py.toFixed(1)}px, 0)`;
 
       const settled =
-        Math.abs(target - rot) < 0.05 && Math.abs(x - px) < 0.1 && Math.abs(y - py) < 0.1;
+        Math.abs(target - rot) < 0.05 && Math.abs(x - rx) < 0.1 && Math.abs(y - ry) < 0.1;
       if (settled) {
         raf = 0;
         lastT = 0;
@@ -121,43 +139,48 @@ export default function Cursor() {
       if (!raf) raf = requestAnimationFrame(render);
     };
 
-    const onMove = (e) => {
-      x = e.clientX;
-      y = e.clientY;
-      placed = true;
-      if (on) kick();
-    };
-
-    const onOver = (e) => setTarget(e.target);
     const setTarget = (t) => {
-      const labelled = t?.closest?.(LABEL_SELECTOR);
+      let next = '';
+      if (t?.closest?.(FIELD_SELECTOR)) next = 'field';
+      else if (t?.closest?.(ACTION_SELECTOR)) next = t.closest(QUIET_SELECTOR) ? 'quiet' : 'banana';
+
+      const labelled = next === 'banana' ? t.closest(LABEL_SELECTOR) : null;
       if (labelled) {
         label.textContent = labelled.getAttribute('data-cursor');
         pill.dataset.show = '';
       } else {
         delete pill.dataset.show;
       }
-      const next = !!t?.closest?.(ACTION_SELECTOR) && !t.closest(NATIVE_SELECTOR);
-      if (next !== on) {
-        on = next;
-        if (on) {
-          // Start at rest on the pointer, not wherever it was last seen.
-          prevX = px = x;
-          py = y;
+
+      if (next !== mode) {
+        if (next === 'banana') {
+          // Start upright on the pointer, not wherever it was last seen.
+          prevX = x;
           rot = -10;
-          banana.dataset.on = '';
-          doc.classList.add('banana-on');
-        } else {
-          delete banana.dataset.on;
-          doc.classList.remove('banana-on');
         }
+        mode = next;
+        root.dataset.mode = mode;
+        doc.classList.toggle('cursor-field', mode === 'field');
       }
-      if (!on) delete pill.dataset.show;
       kick();
     };
+
+    const onMove = (e) => {
+      x = e.clientX;
+      y = e.clientY;
+      if (!placed) {
+        placed = true;
+        rx = prevX = x;
+        ry = y;
+        root.dataset.visible = '';
+      }
+      kick();
+    };
+    const onOver = (e) => setTarget(e.target);
+
     // Scrolling moves the page under a still mouse without reliably firing
-    // pointerover, which left labels like "View" stuck on screen. Re-check
-    // what is under the pointer once per frame while scrolling.
+    // pointerover, which left the banana or a label stuck on screen.
+    // Re-check what is under the pointer once per frame while scrolling.
     let scrollQueued = false;
     const onScroll = () => {
       if (scrollQueued || !placed) return;
@@ -167,9 +190,12 @@ export default function Cursor() {
         setTarget(document.elementFromPoint(x, y));
       });
     };
-    const onDown = () => (banana.dataset.down = '');
-    const onUp = () => delete banana.dataset.down;
-    const onLeave = () => setTarget(null);
+    const onDown = () => (root.dataset.down = '');
+    const onUp = () => delete root.dataset.down;
+    const onLeave = () => delete root.dataset.visible;
+    const onEnter = () => {
+      if (placed) root.dataset.visible = '';
+    };
 
     window.addEventListener('pointermove', onMove, { passive: true });
     document.addEventListener('pointerover', onOver, { passive: true });
@@ -177,6 +203,7 @@ export default function Cursor() {
     window.addEventListener('pointerdown', onDown, { passive: true });
     window.addEventListener('pointerup', onUp, { passive: true });
     doc.addEventListener('mouseleave', onLeave);
+    doc.addEventListener('mouseenter', onEnter);
 
     return () => {
       cancelAnimationFrame(raf);
@@ -186,22 +213,23 @@ export default function Cursor() {
       window.removeEventListener('pointerdown', onDown);
       window.removeEventListener('pointerup', onUp);
       doc.removeEventListener('mouseleave', onLeave);
-      doc.classList.remove('banana-on');
+      doc.removeEventListener('mouseenter', onEnter);
+      doc.classList.remove('has-cursor', 'cursor-field');
     };
   }, [enabled]);
 
   if (!enabled) return null;
 
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[120]">
+    <div ref={rootRef} aria-hidden="true" className="cursor-root pointer-events-none fixed inset-0 z-[120]">
+      <div ref={ringRef} className="cursor-ring">
+        <span className="cursor-ring-shape" />
+      </div>
       <div ref={pillRef} className="cursor-pill">
         <span ref={labelRef} className="cursor-pill-label" />
       </div>
-      <div
-        ref={bananaRef}
-        className="cursor-banana"
-        style={{ transformOrigin: `${HOT_X}px ${HOT_Y}px` }}
-      >
+      <div ref={dotRef} className="cursor-dot" />
+      <div ref={bananaRef} className="cursor-banana" style={{ transformOrigin: `${HOT_X}px ${HOT_Y}px` }}>
         <Banana />
       </div>
     </div>
